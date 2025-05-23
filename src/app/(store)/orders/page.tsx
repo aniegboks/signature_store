@@ -8,12 +8,7 @@ import { formatCurrency } from '@/lib/formatCurrency'
 import { imageUrl } from '@/lib/imageUrl'
 import Image from 'next/image'
 
-interface Order {
-  orderNumber: string;
-  _createdAt: string;
-  status?: string;
-  items?: Array<any>; // or a specific item type
-}
+
 
 const OrdersPage = async () => {
   const { userId } = await auth();

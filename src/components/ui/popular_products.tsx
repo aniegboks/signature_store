@@ -9,23 +9,26 @@ const PopularProducts = ({ popularProduct }: { popularProduct: Product }) => {
 
   return (
     <div className="transition overflow-hidden bg-white dark:bg-gray-900 rounded-md">
-      <Link href={`/popularProduct/${popularProduct.slug?.current}`} className="block group relative">
+      <Link
+        href={`/popularProduct/${popularProduct.slug?.current}`}
+        className="block group relative"
+      >
         {/* Product Image */}
         {popularProduct.images && popularProduct.images[0] && (
-          <div className="relative aspect-[4/5] w-full overflow-hidden">
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md">
             <Image
               src={imageUrl(popularProduct.images[0]).url()}
               alt={popularProduct.name || 'Popular Product'}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300 rounded-md"
+              className={`object-cover group-hover:scale-105 transition-transform duration-300 rounded-md ${
+                isOutOfStock ? 'opacity-50' : ''
+              }`}
             />
-          </div>
-        )}
-
-        {/* Out of Stock Overlay */}
-        {isOutOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 z-10">
-            <span className="text-white font-bold text-lg">Out of Stock</span>
+            {isOutOfStock && (
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <span className="text-white font-bold text-lg">Out of Stock</span>
+              </div>
+            )}
           </div>
         )}
 

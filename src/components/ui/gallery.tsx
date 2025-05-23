@@ -40,7 +40,7 @@ const Gallery = ({ images, productName, isOutOfStock }: GalleryProps) => {
         </AnimatePresence>
 
         {isOutOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/70 text-red-600 font-bold z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold z-10">
             Out of Stock
           </div>
         )}

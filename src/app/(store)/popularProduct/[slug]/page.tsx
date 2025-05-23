@@ -1,6 +1,5 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import Container from '@/components/ui/container';
 import { getProductBySlug } from '@/sanity/lib/products/getProductBySlug';
 import Gallery from '@/components/ui/gallery';
@@ -9,7 +8,7 @@ import { GalleryProvider } from '@/components/gallery_context';
 import { getRelatedProduct } from '@/sanity/lib/products/getRelatedProduct';
 import { RELATED_PRODUCT_BY_QUERYResult } from '../../../../../sanity.types';
 import RelatedProducts from '@/components/ui/related_product';
-import { Expand, Palette } from 'lucide-react';
+import { Expand } from 'lucide-react';
 import Size from '@/components/ui/size';
 import AddToCartButton from '@/components/ui/add_to_cart_button';
 import { RevealAnimation } from '@/utils/reveal_animation';
@@ -50,7 +49,7 @@ const Product = async ({ params }: ProductProps) => {
                                         isOutOfStock={isOutOfStock}
                                     />
                                     {isOutOfStock && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-white/70 text-red-600 font-bold">
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-black font-bold">
                                             Out of Stock
                                         </div>
                                     )}

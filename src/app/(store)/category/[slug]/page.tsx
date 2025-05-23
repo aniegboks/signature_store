@@ -1,11 +1,8 @@
 import React from 'react';
 import Container from '@/components/ui/container';
-import { getFeaturedCategories } from '@/sanity/lib/products/getFeaturedCategories';
 import { getProductByCategory } from '@/sanity/lib/products/getProductByCategory';
 import ProductGrid from '@/components/ui/product_grid';
-import PopularGrid from '@/components/ui/popular_grid';
 import BannerSection from '@/components/banner';
-import { Banner } from '../../../../../sanity.types';
 import { getActiveBanner } from "@/sanity/lib/banner/getActiveBanner";
 
 export const dynamic = "force-static"

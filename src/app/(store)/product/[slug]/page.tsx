@@ -8,7 +8,7 @@ import { GalleryProvider } from '@/components/gallery_context';
 import RelatedProducts from '@/components/ui/related_product';
 import { RELATED_PRODUCT_BY_QUERYResult } from '../../../../../sanity.types';
 import { getRelatedProduct } from '@/sanity/lib/products/getRelatedProduct';
-import { Expand, Palette } from 'lucide-react';
+import { Expand } from 'lucide-react';
 import Size from '@/components/ui/size';
 import AddToCartButton from '@/components/ui/add_to_cart_button';
 import { RevealAnimation } from '@/utils/reveal_animation';

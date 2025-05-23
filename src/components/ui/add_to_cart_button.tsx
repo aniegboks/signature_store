@@ -12,7 +12,7 @@ type AddToCartButtonProps = {
 };
 
 const AddToCartButton = ({ product, disabled }: AddToCartButtonProps) => {
-  const { addItem, removeItem, getItemCount } = useCartStore();
+  const { addItem } = useCartStore();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -21,8 +21,6 @@ const AddToCartButton = ({ product, disabled }: AddToCartButtonProps) => {
 
   if (!isClient) return null;
 
-  const itemCount = getItemCount(product._id);
-  const isRemoveDisabled = itemCount === 0;
 
   const addItems = () => {
     addItem(product);

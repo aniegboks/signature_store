@@ -4,7 +4,7 @@ import { ClerkLoaded, SignInButton, UserButton, useUser } from '@clerk/nextjs';
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingBag, Package } from "lucide-react";
+import { Menu, X, ShoppingBag } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { nav } from '@/utils';
 import Button from './ui/button';

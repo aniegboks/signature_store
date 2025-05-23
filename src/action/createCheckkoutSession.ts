@@ -81,11 +81,8 @@ export async function createCheckoutSession(
       success: true,
       message: session.url!,
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating checkout session:", error);
-    return {
-      success: false,
-      message: error?.message || "Failed to create checkout session.",
-    };
+    throw error;
   }
 }

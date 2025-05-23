@@ -19,9 +19,9 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-  } catch (err: any) {
-    console.error("Webhook verification failed:", err.message);
-    return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
+  } catch (err) {
+    console.error("Webhook verification failed:", err);
+    return NextResponse.json({ error: `Webhook Error: ${err}` }, { status: 400 });
   }
 
   if (event.type === "checkout.session.completed") {

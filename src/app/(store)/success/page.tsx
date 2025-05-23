@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import Button from '@/components/ui/button';
 import Link from 'next/link';
 import { useCartStore } from '@/store/store';
-import { CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import Avatar from './avatar';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 
 const Collections = () => {
     return (

@@ -2,7 +2,6 @@ import React from 'react'
 import Image from 'next/image'
 import { imageUrl } from '@/lib/imageUrl'
 import Link from 'next/link';
-import { getRelatedProduct } from '@/sanity/lib/products/getRelatedProduct';
 import { RELATED_PRODUCT_BY_QUERYResult } from '../../../sanity.types';
 
 type RelatedproductProps = {

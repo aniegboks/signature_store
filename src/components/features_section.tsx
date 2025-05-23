@@ -7,23 +7,16 @@ import Container from './ui/container';
 //import Display from './ui/display';
 import Collections from './ui/collections';
 import Pointer from './ui/pointer';
-import { Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import TypeAnimation from './ui/type_animation';
-
-import { ALL_TESTIMONIALS_QUERYResult } from '../../sanity.types';
 import { RevealAnimation } from '@/utils/reveal_animation';
 
-type FeaturesSectionProps = {
-    featuresSection: ALL_TESTIMONIALS_QUERYResult
-}
 
 const FeaturesSection = () => {
 
     const [isHovered, setIsHovered] = useState(false);
     const [isCardHovered, setIsCardHovered] = useState(false);
-    const [isTemplated, setIsTemplated] = useState(false);
-
+    
     return (
         <section className="my-16">
             <RevealAnimation>

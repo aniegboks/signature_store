@@ -2,7 +2,6 @@
 
 import { Product } from '../../../sanity.types';
 import ProductThumbnail from './product_thumbnail';
-import { AnimatePresence, motion } from "framer-motion";
 
 
 import React from 'react';

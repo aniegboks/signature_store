@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/store";
-import { SignedIn, SignInButton, useAuth, useUser } from "@clerk/nextjs";
+import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Container from "@/components/ui/container";
 import { imageUrl } from "@/lib/imageUrl";
