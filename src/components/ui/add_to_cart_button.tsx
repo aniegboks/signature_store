@@ -34,7 +34,7 @@ const AddToCartButton = ({ product, disabled }: AddToCartButtonProps) => {
       <Button
         onClick={addItems}
         disabled={disabled}
-        className="hover-gradient-move text-white hover:text-white flex items-center justify-center font-bold text-lg disabled:opacity-50"
+        className="hover-gradient-move text-white hover:text-white flex items-center justify-center font-bold text-lg disabled:opacity-50 font-heading"
       >
         Add to cart
       </Button>

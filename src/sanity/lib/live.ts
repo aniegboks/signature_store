@@ -4,7 +4,7 @@
 import "server-only";
 
 import { defineLive } from "next-sanity";
-import { client } from './client'
+import { client } from "./client";
 
 const token = process.env.SANITY_READ_API_TOKEN;
 if (!token) {

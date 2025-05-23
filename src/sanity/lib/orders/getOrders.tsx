@@ -9,7 +9,7 @@ export const getMyOrders = async (userId: string) => {
   const MY_QUERY_ORDERS = defineQuery(`
     *[_type == "order" && clerkUserId == $userId] | order(orderDate desc) {
       ...,
-      product[] {
+      products[] {
         ...,
         product->
       }

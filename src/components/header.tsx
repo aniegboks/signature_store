@@ -60,7 +60,7 @@ const Header = () => {
     return (
         <header>
             <motion.nav
-                className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+                className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 font-heading text-sm"
                 initial={{ y: 0 }}
                 animate={{ y: showNavbar ? 0 : -100 }}
                 transition={{ duration: 0.3 }}
@@ -173,7 +173,6 @@ const Header = () => {
                                 </motion.li>
                                 <motion.li
                                     variants={itemVariants}
-                                    onClick={() => setIsToggle(false)}
                                 >
                                     <div>
                                         <ClerkLoaded>
@@ -181,7 +180,11 @@ const Header = () => {
                                                 <div className=''>
                                                     {user && (
                                                         <Link href="/orders" className=''>
-                                                            <span className='mr-2'>Orders</span>
+                                                            <span
+                                                                className='mr-2'
+                                                                onClick={() => setIsToggle(false)}
+
+                                                            >Orders</span>
                                                         </Link>
                                                     )}
                                                 </div>

@@ -139,7 +139,7 @@ export type Banner = {
   _rev: string;
   name?: string;
   description?: string;
-  images?: {
+  images?: Array<{
     asset?: {
       _ref: string;
       _type: "reference";
@@ -150,7 +150,8 @@ export type Banner = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
-  };
+    _key: string;
+  }>;
   cardImages?: {
     asset?: {
       _ref: string;
@@ -418,7 +419,7 @@ export type ALL_BANNERS_QUERYResult = Array<{
   _rev: string;
   name?: string;
   description?: string;
-  images?: {
+  images?: Array<{
     asset?: {
       _ref: string;
       _type: "reference";
@@ -429,7 +430,8 @@ export type ALL_BANNERS_QUERYResult = Array<{
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
-  };
+    _key: string;
+  }>;
   cardImages?: {
     asset?: {
       _ref: string;
@@ -475,7 +477,7 @@ export type ALL_FAQ_QUERYResult = Array<{
 
 // Source: ./src/sanity/lib/orders/getOrders.tsx
 // Variable: MY_QUERY_ORDERS
-// Query: *[_type == "order" && clerkUserId == $userId] | order(orderDate desc) {      ...,      product[] {        ...,        product->      }    }
+// Query: *[_type == "order" && clerkUserId == $userId] | order(orderDate desc) {      ...,      products[] {        ...,        product->      }    }
 export type MY_QUERY_ORDERSResult = Array<{
   _id: string;
   _type: "order";
@@ -489,23 +491,58 @@ export type MY_QUERY_ORDERSResult = Array<{
   customerName?: string;
   email?: string;
   stripePaymentIntentId?: string;
-  products?: Array<{
-    product?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "product";
-    };
+  products: Array<{
+    product: {
+      _id: string;
+      _type: "product";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      slug?: Slug;
+      description?: string;
+      tag?: string;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      price?: number;
+      sizes?: Array<string>;
+      categories?: Array<{
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        _key: string;
+        [internalGroqTypeReferenceTo]?: "category";
+      }>;
+      stock?: number;
+      color?: Color;
+      relatedProducts?: Array<{
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        _key: string;
+        [internalGroqTypeReferenceTo]?: "product";
+      }>;
+    } | null;
     quantity?: number;
     _type: "productItem";
     _key: string;
-  }>;
+  }> | null;
   totalPrice?: number;
   currency?: string;
   ammountDiscount?: number;
   status?: "cancelled" | "delivered" | "paid" | "pending" | "shipped";
   orderDate?: string;
-  product: null;
 }>;
 
 // Source: ./src/sanity/lib/products/getAllCategories.ts
@@ -869,7 +906,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"banner\"] | order(name asc)": ALL_BANNERS_QUERYResult;
     "*[_type == \"faq\"] | order(name asc)": ALL_FAQ_QUERYResult;
-    "\n    *[_type == \"order\" && clerkUserId == $userId] | order(orderDate desc) {\n      ...,\n      product[] {\n        ...,\n        product->\n      }\n    }\n  ": MY_QUERY_ORDERSResult;
+    "\n    *[_type == \"order\" && clerkUserId == $userId] | order(orderDate desc) {\n      ...,\n      products[] {\n        ...,\n        product->\n      }\n    }\n  ": MY_QUERY_ORDERSResult;
     "*[_type == \"category\"] | order(name asc)": ALL_CATEGORIES_QUERYResult;
     "*[_type == \"product\" && \"Popular\" in categories[] -> title] | order(name asc)": ALL_POPULAR_PRODUCTS_QUERYResult;
     "*[_type == \"product\"] | order(name asc)": ALL_PRODUCTS_QUERYResult;

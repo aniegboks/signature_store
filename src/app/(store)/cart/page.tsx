@@ -83,29 +83,33 @@ const CartPage = () => {
     return (
       <div className="py-32">
         <Container>
-          <div className="text-center text-xl text-gray-500">Your cart is empty.</div>
-          <div className="mt-24 max-w-md mx-auto shadow-sm p-6 rounded-md">
-            <p className="text-lg font-semibold mb-4">Order Summary</p>
-            <hr className="text-neutral-300 mb-4" />
-            <div className="flex items-center justify-between text-sm">
-              <p>Order Total:</p>
-              <span className="font-medium">$0.00</span>
-            </div>
-            {isSignedIn ? (
-              <div>
-                <Button className="mt-6 w-full" variant="secondary" onClick={handleCheckout}>
-                  Checkout
-                </Button>
-              </div>
-            ) : (
-              <SignInButton mode="modal">
-                <div>
-                  <Button className="mt-6 w-full" variant="secondary">
-                    Sign in to Checkout
-                  </Button>
+          <div className="text-xl text-gray-500 font-heading">Your cart is empty.</div>
+          <div className="w-full flex items-start justify-start mt-24">
+            <div className="bg-neutral-100 p-8 rounded-md w-[280px]">
+              <div className=" p-6 rounded-md">
+                <p className="text-lg font-bold mb-4 font-heading">Order Summary</p>
+                <hr className="text-neutral-300 mb-4" />
+                <div className="flex items-center justify-between text-sm">
+                  <p>Order Total:</p>
+                  <span className="font-medium">$0.00</span>
                 </div>
-              </SignInButton>
-            )}
+                {isSignedIn ? (
+                  <div>
+                    <Button className="mt-6 w-full" variant="secondary" onClick={handleCheckout}>
+                      Checkout
+                    </Button>
+                  </div>
+                ) : (
+                  <SignInButton mode="modal">
+                    <div>
+                      <Button className="mt-6 w-full" variant="secondary">
+                        Sign in to Checkout
+                      </Button>
+                    </div>
+                  </SignInButton>
+                )}
+              </div>
+            </div>
           </div>
         </Container>
         <Toaster position="top-center" />
@@ -122,11 +126,11 @@ const CartPage = () => {
             {groupItems.map((item) => (
               <div
                 key={item.product._id}
-                className="p-4 border rounded-md transition cursor-pointer flex items-center justify-between"
+                className="py-8  rounded-md transition cursor-pointer flex justify-between"
                 onClick={() => router.push(`/product/${item.product.slug?.current}`)}
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 flex-shrink-0 relative">
+                <div className="flex  gap-4">
+                  <div className="w-48 h-48 flex-shrink-0 relative">
                     {item.product.images && (
                       <Image
                         src={imageUrl(item.product.images[0]).url()}
@@ -136,12 +140,16 @@ const CartPage = () => {
                       />
                     )}
                   </div>
-                  <div className="flex flex-col justify-between flex-grow">
-                    <div className="font-semibold">{item.product.name}</div>
-                    <div className="text-sm text-gray-500">${item.product.price}</div>
+                  <div className="flex flex-col flex-grow w-20">
+                    <div className="font-bold font-heading">{item.product.name}</div>
+                    <div className="text-sm text-gray-500 mt-2">${item.product.price}</div>
                   </div>
                 </div>
-                <div className="text-sm font-medium">Quantity: {item.quantity}</div>
+                <div className="flex items-start justify-center">
+                  <div className="text-sm px-4 text-neutral-600">Quantity:{item.quantity}</div>
+                  <span>|</span>
+                  <div className="text-sm text-neutral-600 px-4">Type: {item.product.tag}</div>
+                </div>
                 <div
                   className="h-8 w-8 rounded-full shadow-sm flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-transform duration-200 transform hover:scale-110 cursor-pointer group"
                   onClick={(e) => {
@@ -156,26 +164,31 @@ const CartPage = () => {
             ))}
           </div>
         </div>
+        <hr className="mt-2 text-neutral-300" />
+
 
         {/* Order Summary */}
-        <div className="mt-24 max-w-md mx-auto shadow-sm p-6 rounded-md">
-          <p className="text-lg font-semibold mb-4">Order Summary</p>
-          <hr className="text-neutral-300 mb-4" />
-          <div className="flex items-center justify-between text-sm">
-            <p>Order Total:</p>
-            <span className="font-medium">${totalPrice}</span>
-          </div>
-          {isSignedIn ? (
-            <Button className="mt-6 w-full" variant="secondary" onClick={handleOrderCheckout} disabled={isLoading}>
-              {isLoading ? "Processing..." : "Checkout"}
-            </Button>
-          ) : (
-            <SignInButton mode="modal">
-              <Button className="mt-6 w-full" variant="secondary">
-                Sign in to Checkout
+
+        <div className="w-full flex items-start justify-start">
+          <div className="bg-neutral-100 p-8 rounded-md w-[280px]">
+            <p className="text-lg  mb-4 font-heading font-bold">Order Summary</p>
+            <hr className="text-neutral-300 mb-4" />
+            <div className="flex items-center justify-between text-sm">
+              <p>Order Total:</p>
+              <span className="font-medium">${totalPrice}</span>
+            </div>
+            {isSignedIn ? (
+              <Button className="mt-6 w-full" variant="secondary" onClick={handleOrderCheckout} disabled={isLoading}>
+                {isLoading ? "Processing..." : "Checkout"}
               </Button>
-            </SignInButton>
-          )}
+            ) : (
+              <SignInButton mode="modal">
+                <Button className="mt-6 w-full" variant="secondary">
+                  Sign in to Checkout
+                </Button>
+              </SignInButton>
+            )}
+          </div>
         </div>
       </Container>
       <Toaster position="top-center" />

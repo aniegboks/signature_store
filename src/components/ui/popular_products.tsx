@@ -17,7 +17,7 @@ const PopularProducts = ({ popularProduct }: { popularProduct: Product }) => {
               src={imageUrl(popularProduct.images[0]).url()}
               alt={popularProduct.name || 'Popular Product'}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover group-hover:scale-105 transition-transform duration-300 rounded-md"
             />
           </div>
         )}

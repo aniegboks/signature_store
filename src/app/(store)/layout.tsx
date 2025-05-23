@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Cormorant_Infant, Jost } from "next/font/google";
+import { Cormorant_Infant, Urbanist } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/header";
 import "../../app/globals.css";
 import { SanityLive } from "@/sanity/lib/live";
 import Footer from "@/components/footer";
+import { ReactLenis } from "@/utils/lenis";
 
 
 
@@ -17,7 +18,7 @@ const cormorant_infant = Cormorant_Infant({
 });
 
 
-const jost = Jost({
+const urbanist = Urbanist({
   subsets: ["latin"],
   variable: "--font-urbanist",
   display: "swap",
@@ -37,15 +38,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider dynamic>
-
-        <body
-          className={`${jost.variable} ${cormorant_infant.variable} antialiased`}
-        >
-          <Header />
-          {children}
-          <Footer />
-          <SanityLive />
-        </body>
+        <ReactLenis root>
+          <body
+            className={`${urbanist.variable} ${cormorant_infant.variable} antialiased`}
+          >
+            <Header />
+            {children}
+            <Footer />
+            <SanityLive />
+          </body>
+        </ReactLenis>
       </ClerkProvider>
     </html>
   );

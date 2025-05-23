@@ -10,8 +10,8 @@ export type CartItem = {
 type CartState = {
   items: CartItem[];
   addItem: (product: Product) => void;
-  removeItem: (productId: string) => void; 
-  deleteItem: (productId: string) => void; 
+  removeItem: (productId: string) => void; // Removes ONE unit
+  deleteItem: (productId: string) => void; // Removes the entire item
   clearCart: () => void;
   getTotalPrice: () => number;
   getItemCount: (productId: string) => number;
