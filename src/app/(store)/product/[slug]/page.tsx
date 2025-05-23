@@ -6,7 +6,7 @@ import Gallery from '@/components/ui/gallery';
 import Thumbnail from '@/components/ui/thumbnail';
 import { GalleryProvider } from '@/components/gallery_context';
 import RelatedProducts from '@/components/ui/related_product';
-import { RELATED_PRODUCT_BY_QUERYResult } from '../../../../../sanity.types';
+import { PRODUCT_BY_QUERY_IDResult, RELATED_PRODUCT_BY_QUERYResult } from '../../../../../sanity.types';
 import { getRelatedProduct } from '@/sanity/lib/products/getRelatedProduct';
 import { Expand } from 'lucide-react';
 import Size from '@/components/ui/size';
@@ -20,7 +20,7 @@ export const revalidate = 3600;
 
 const Product = async ({ params }: ProductProps) => {
     const { slug } = await params;
-    const product = await getProductBySlug(slug);
+    const product: PRODUCT_BY_QUERY_IDResult = await getProductBySlug(slug);
 
     if (!product) {
         return notFound();
@@ -44,19 +44,17 @@ const Product = async ({ params }: ProductProps) => {
                                             }`}
                                     >
                                         <Gallery
-                                            images={Array.isArray(product.images) ? product.images : []}
-                                            productName={product.name || 'Product'}
+                                            product={product}
                                             isOutOfStock={isOutOfStock}
                                         />
+
                                         {isOutOfStock && (
                                             <div className="absolute inset-0 flex items-center justify-center bg-white/70 text-red-600 font-bold">
                                                 Out of Stock
                                             </div>
                                         )}
                                     </div>
-                                    <Thumbnail
-                                        images={Array.isArray(product.images) ? product.images : []}
-                                    />
+                                    <Thumbnail product={product} />
                                 </div>
 
 

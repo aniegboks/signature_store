@@ -44,8 +44,7 @@ const Product = async ({ params }: ProductProps) => {
                                         }`}
                                 >
                                     <Gallery
-                                        images={Array.isArray(product.images) ? product.images : []}
-                                        productName={product.name || 'Product'}
+                                        product={product}
                                         isOutOfStock={isOutOfStock}
                                     />
                                     {isOutOfStock && (
@@ -54,9 +53,7 @@ const Product = async ({ params }: ProductProps) => {
                                         </div>
                                     )}
                                 </div>
-                                <Thumbnail
-                                    images={Array.isArray(product.images) ? product.images : []}
-                                />
+                                <Thumbnail product={product} />
                             </div>
 
                             <div>

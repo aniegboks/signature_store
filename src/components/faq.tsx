@@ -14,6 +14,8 @@ type FaqProps = {
 };
 
 const Faq = ({ allFaq }: FaqProps) => {
+    const [openIndex, setOpenIndex] = useState<number | null>(null);
+
     return (
         <div className="mt-48 mb-24">
             <RevealAnimation>
@@ -21,8 +23,6 @@ const Faq = ({ allFaq }: FaqProps) => {
                     <div className="grid gap-6">
                         {allFaq.map((faqData) => {
                             const img = faqData.image?.asset ? imageUrl(faqData.image).url() : null;
-                            const [openIndex, setOpenIndex] = useState<number | null>(null);
-
                             return (
                                 <div
                                     key={faqData._id}

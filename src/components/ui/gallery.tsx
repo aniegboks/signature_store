@@ -5,21 +5,22 @@ import Image from 'next/image';
 import { imageUrl } from '@/lib/imageUrl';
 import { useGallery } from '../gallery_context';
 import { AnimatePresence, motion } from 'framer-motion';
+import { PRODUCT_BY_QUERY_IDResult } from '../../../sanity.types';
 
 interface GalleryProps {
-  images: any[];
-  productName: string;
+  product: PRODUCT_BY_QUERY_IDResult;
   isOutOfStock: boolean;
 }
 
-const Gallery = ({ images, productName, isOutOfStock }: GalleryProps) => {
+const Gallery = ({ product, isOutOfStock }: GalleryProps) => {
   const { mainImageIndex } = useGallery();
+  const image = product?.images?.[mainImageIndex];
 
   return (
     <div className="grid grid-cols-1 w-full h-full space-y-4 lg:space-y-8">
       <div className="w-full aspect-square overflow-hidden rounded-md relative">
         <AnimatePresence mode="wait">
-          {images.length > 0 && (
+          {image && (
             <motion.div
               key={mainImageIndex}
               className="absolute inset-0"
@@ -29,8 +30,8 @@ const Gallery = ({ images, productName, isOutOfStock }: GalleryProps) => {
               transition={{ duration: 0.4, ease: 'easeOut' }}
             >
               <Image
-                src={imageUrl(images[mainImageIndex]).url()}
-                alt={productName || 'product image'}
+                src={imageUrl(image).url()}
+                alt={product.name || 'Product image'}
                 fill
                 className="object-contain"
                 priority

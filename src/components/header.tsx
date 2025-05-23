@@ -7,12 +7,7 @@ import Link from "next/link";
 import { Menu, X, ShoppingBag } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { nav } from '@/utils';
-import Button from './ui/button';
-import { Badge } from "@/components/ui/badge"
 import { useCartStore } from '@/store/store';
-
-
-
 
 const menuVariants = {
     open: {
