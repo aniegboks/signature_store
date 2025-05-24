@@ -52,15 +52,15 @@ const SuccessPage = () => {
             </>
           )}
         </p>
-        <div className='flex gap-4 mt-4'>
+        <div className='flex gap-4 mt-4 justify-center'>
           <Link href="/">
             <Button className="w-full" variant="secondary">
-              Continue Shopping
+              Store
             </Button>
           </Link>
           <Link href="/orders">
             <Button className="w-full bg-neutral-400" variant="primary">
-             Check Orders
+             Orders
             </Button>
           </Link>
         </div>

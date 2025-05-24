@@ -79,11 +79,11 @@ const OrdersPage = async () => {
                           )}
 
                         </div>
-                        <div>
-                          <div className="text-sm font-semibold text-neutral-700">{product.product?.name}</div>
+                        <div className='w-40'>
                           <div className='text-sm text-neutral-700 mt-2'>
                             Quantity: {product.quantity || "N?A"}
                           </div>
+                          <div className="text-sm font-semibold text-neutral-700">{product.product?.name}</div>
                         </div>
                       </div>
                     ))
