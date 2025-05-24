@@ -12,7 +12,7 @@ type TestimonialsProps = {
 
 const Testimonials = ({ testimonials }: TestimonialsProps) => {
   return (
-    <div className="my-48">
+    <div className="my-24">
       <Container>
         <RevealAnimation>
           <div className="relative">

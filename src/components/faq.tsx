@@ -17,7 +17,7 @@ const Faq = ({ allFaq }: FaqProps) => {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     return (
-        <div className="mt-48 mb-24">
+        <div className="py-24">
             <RevealAnimation>
                 <Container>
                     <div className="grid gap-6">

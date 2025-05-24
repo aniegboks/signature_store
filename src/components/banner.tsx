@@ -80,7 +80,7 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
               {/* Image Section */}
               <RevealAnimation>
                 <div className="relative mt-2 w-full">
-                  <div className="w-full h-[700px] relative overflow-hidden rounded-md">
+                  <div className="w-full aspect-video relative overflow-hidden rounded-md">
                     {/* Swipe Animated Image */}
                     <AnimatePresence custom={direction} mode="wait">
                       <motion.div

@@ -15,7 +15,7 @@ const Cta = () => {
             {!isExpanded && (
                 <RevealAnimation>
 
-                    <div className="relative w-full py-16">
+                    <div className="relative w-full py-24">
                         <Container>
                             <motion.div
                                 className="relative overflow-hidden rounded-lg"
