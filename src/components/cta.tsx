@@ -17,45 +17,48 @@ const Cta = () => {
 
                     <div className="relative w-full">
                         <Container>
+                            <h2 className="mb-8 font-bold tracking-tight text-xl md:text-3xl">
+                                Frequently asked
+                            </h2>
                             <motion.div
                                 className="relative overflow-hidden rounded-lg"
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.5, ease: 'easeOut' }}
                             >
-                                    <video
-                                        className="w-full h-auto object-cover rounded-lg"
-                                        autoPlay
-                                        loop
-                                        muted
-                                        playsInline
-                                    >
-                                        <source src="/assets/hero.mp4" type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
+                                <video
+                                    className="w-full h-auto object-cover rounded-lg"
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                >
+                                    <source src="/assets/hero.mp4" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
 
 
                                 {/* Overlay */}
-                                    <div className="absolute inset-0 bg-black/20 hidden md:flex flex-col justify-end text-white px-6">
-                                        <div className="flex items-end justify-end mt-10 mr-4">
-                                            <button
-                                                onClick={() => setIsExpanded(true)}
-                                                className="h-10 w-10 bg-neutral-700 flex items-center justify-center rounded-full border border-orange-400 p-3"
-                                                aria-label="Expand video"
-                                            >
-                                                <Expand size={16} />
-                                            </button>
-                                        </div>
-                                            <div className="ml-4 h-full flex flex-col justify-end pb-4">
-                                                <h1 className="text-3xl md:text-3xl font-bold mb-4">
-                                                    Signature: Style in Motion
-                                                </h1>
-                                                <p className="text-sm md:text-sm max-w-2xl font-heading">
-                                                    Discover fashion that flows with you—timeless cuts,<br />
-                                                    luxurious feel, effortless confidence.
-                                                </p>
-                                            </div>
+                                <div className="absolute inset-0 bg-black/20 hidden md:flex flex-col justify-end text-white px-6">
+                                    <div className="flex items-end justify-end mt-10 mr-4">
+                                        <button
+                                            onClick={() => setIsExpanded(true)}
+                                            className="h-10 w-10 bg-neutral-700 flex items-center justify-center rounded-full border border-orange-400 p-3"
+                                            aria-label="Expand video"
+                                        >
+                                            <Expand size={16} />
+                                        </button>
                                     </div>
+                                    <div className="ml-4 h-full flex flex-col justify-end pb-4">
+                                        <h1 className="text-3xl md:text-3xl font-bold mb-4">
+                                            Signature: Style in Motion
+                                        </h1>
+                                        <p className="text-sm md:text-sm max-w-2xl font-heading">
+                                            Discover fashion that flows with you—timeless cuts,<br />
+                                            luxurious feel, effortless confidence.
+                                        </p>
+                                    </div>
+                                </div>
 
                             </motion.div>
                         </Container>
