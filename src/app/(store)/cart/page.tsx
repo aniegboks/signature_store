@@ -126,7 +126,7 @@ const CartPage = () => {
             {groupItems.map((item) => (
               <div
                 key={item.product._id}
-                className="py-8  rounded-md transition cursor-pointer flex justify-between"
+                className="py-8  rounded-md transition cursor-pointer flex sm:flex-row flex-col justify-between"
                 onClick={() => router.push(`/product/${item.product.slug?.current}`)}
               >
                 <div className="flex  gap-4">
@@ -140,25 +140,27 @@ const CartPage = () => {
                       />
                     )}
                   </div>
-                  <div className="flex flex-col flex-grow">
+                  <div className="flex flex-col flex-groww-0 w-20">
                     <div className="font-bold font-heading">{item.product.name}</div>
                     <div className="text-sm text-gray-500 mt-2">${item.product.price}</div>
                   </div>
                 </div>
-                <div className="flex items-start justify-center">
-                  <div className="text-sm px-4 text-neutral-600">Quantity:{item.quantity}</div>
-                  <span>|</span>
-                  <div className="text-sm text-neutral-600 px-4">Type: {item.product.tag}</div>
-                </div>
-                <div
-                  className="h-8 w-8 rounded-full shadow-sm flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-transform duration-200 transform hover:scale-110 cursor-pointer group"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeItem(item.product._id);
-                    toast.success(`${item.product.name} removed from cart.`);
-                  }}
-                >
-                  <X size={14} className="text-neutral-700 transition-transform duration-200 group-hover:scale-110" />
+                <div className="flex justify-between h-10 items-center">
+                  <div className="flex items-start justify-center">
+                    <div className="text-sm px-4 text-neutral-600">Quantity:{item.quantity}</div>
+                    <span>|</span>
+                    <div className="text-sm text-neutral-600 px-4">Type: {item.product.tag}</div>
+                  </div>
+                  <div
+                    className="h-8 w-8 rounded-full shadow-sm flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-transform duration-200 transform hover:scale-110 cursor-pointer group"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeItem(item.product._id);
+                      toast.success(`${item.product.name} removed from cart.`);
+                    }}
+                  >
+                    <X size={14} className="text-neutral-700 transition-transform duration-200 group-hover:scale-110" />
+                  </div>
                 </div>
               </div>
             ))}
