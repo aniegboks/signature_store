@@ -103,7 +103,7 @@ const CartPage = () => {
                   <SignInButton mode="modal">
                     <div>
                       <Button className="mt-6 w-full" variant="secondary">
-                        Sign in to Checkout
+                        Sign in
                       </Button>
                     </div>
                   </SignInButton>
@@ -184,7 +184,7 @@ const CartPage = () => {
             ) : (
               <SignInButton mode="modal">
                 <Button className="mt-6 w-full" variant="secondary">
-                  Sign in to Checkout
+                  Sign in
                 </Button>
               </SignInButton>
             )}

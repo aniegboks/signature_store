@@ -160,7 +160,7 @@ const Header = () => {
                                     variants={itemVariants}
                                     onClick={() => setIsToggle(false)}
                                 >
-                                    <Link href="/basket">
+                                    <Link href="/cart">
                                         <div className='flex'>
                                             <span>Cart</span>
                                         </div>
