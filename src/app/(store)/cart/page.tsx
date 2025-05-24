@@ -140,7 +140,7 @@ const CartPage = () => {
                       />
                     )}
                   </div>
-                  <div className="flex flex-col flex-grow w-20">
+                  <div className="flex flex-col flex-grow">
                     <div className="font-bold font-heading">{item.product.name}</div>
                     <div className="text-sm text-gray-500 mt-2">${item.product.price}</div>
                   </div>
