@@ -11,7 +11,7 @@ const RELATED_PRODUCT_BY_QUERY = defineQuery(`
       _type == "product" &&
       _id != ^._id &&
       count(categories[@._ref in ^.categories[]._ref]) > 0
-    ] | order(name asc, price asc)[0..4] {
+    ] | order(name asc, price asc)[0..5] {
       name,
       slug,
       price,

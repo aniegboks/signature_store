@@ -783,7 +783,7 @@ export type PRODUCT_BY_QUERY_IDResult = {
 
 // Source: ./src/sanity/lib/products/getRelatedProduct.ts
 // Variable: RELATED_PRODUCT_BY_QUERY
-// Query: *[_type == "product" && slug.current == $slug][0]{    name,    price,    images,    categories[]->,    "related": *[      _type == "product" &&      _id != ^._id &&      count(categories[@._ref in ^.categories[]._ref]) > 0    ] | order(name asc, price asc)[0..4] {      name,      slug,      price,      "image": images[0]    }  }
+// Query: *[_type == "product" && slug.current == $slug][0]{    name,    price,    images,    categories[]->,    "related": *[      _type == "product" &&      _id != ^._id &&      count(categories[@._ref in ^.categories[]._ref]) > 0    ] | order(name asc, price asc)[0..5] {      name,      slug,      price,      "image": images[0]    }  }
 export type RELATED_PRODUCT_BY_QUERYResult = {
   name: string | null;
   price: number | null;
@@ -913,7 +913,7 @@ declare module "@sanity/client" {
     "*[_type == \"category\" && title in [\"Hoodies\", \"Blazers\"]] | order(name asc)": FEATURED_CATEGORIES_QUERYResult;
     "\n        *[\n            _type == \"product\"\n            && references(*[_type == \"category\" && title in [\"Hoodies\", \"Blazers\"] && slug.current == $categorySlug]._id)\n        ] | order(name asc)\n        ": PRODUCT_BY_CATEGORY_QUERYResult;
     "\n  *[\n    _type == \"product\" && slug.current == $slug\n  ] | order(name asc) [0]\n": PRODUCT_BY_QUERY_IDResult;
-    "\n  *[_type == \"product\" && slug.current == $slug][0]{\n    name,\n    price,\n    images,\n    categories[]->,\n    \"related\": *[\n      _type == \"product\" &&\n      _id != ^._id &&\n      count(categories[@._ref in ^.categories[]._ref]) > 0\n    ] | order(name asc, price asc)[0..4] {\n      name,\n      slug,\n      price,\n      \"image\": images[0]\n    }\n  }\n": RELATED_PRODUCT_BY_QUERYResult;
+    "\n  *[_type == \"product\" && slug.current == $slug][0]{\n    name,\n    price,\n    images,\n    categories[]->,\n    \"related\": *[\n      _type == \"product\" &&\n      _id != ^._id &&\n      count(categories[@._ref in ^.categories[]._ref]) > 0\n    ] | order(name asc, price asc)[0..5] {\n      name,\n      slug,\n      price,\n      \"image\": images[0]\n    }\n  }\n": RELATED_PRODUCT_BY_QUERYResult;
     "*[\n    _type == \"sale\" &&\n    isActive == true &&\n    couponCode == $couponCode\n  ] | order(validForm desc)[0]": ACTIVE_SALES_COUPON_QUERYResult;
     "*[_type == \"testimonial\"] | order(name asc)": ALL_TESTIMONIALS_QUERYResult;
   }
