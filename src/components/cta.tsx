@@ -10,12 +10,12 @@ const Cta = () => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <>
+        <div className='py-24'>
             {/* Normal State */}
             {!isExpanded && (
                 <RevealAnimation>
 
-                    <div className="relative w-full py-24">
+                    <div className="relative w-full">
                         <Container>
                             <motion.div
                                 className="relative overflow-hidden rounded-lg"
@@ -117,7 +117,7 @@ const Cta = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 };
 
