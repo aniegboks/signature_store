@@ -17,7 +17,7 @@ const Cta = () => {
 
                     <div className="relative w-full">
                         <Container>
-                            <h2 className="hidden lg:mb-8 font-bold tracking-tight text-xl md:text-3xl pt-16 md:pt-8 pb-4">
+                            <h2 className="md:hidden mb-8 font-bold tracking-tight text-xl md:text-3xl pt-16 md:pt-8 pb-4">
                               Annual Exhibitions
                             </h2>
                             <motion.div
