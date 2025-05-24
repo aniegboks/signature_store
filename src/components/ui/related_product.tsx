@@ -13,7 +13,7 @@ const RelatedProducts = ({relatedProduct}:RelatedproductProps) => {
         <div className="my-24">
             <h2 className="text-2xl font-bold mb-4">Related Products</h2>
             {relatedProduct?.related && relatedProduct.related.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 mt-4 gap-4">
                     {relatedProduct.related.map((item) => (
                         <Link
                             key={item.name}
