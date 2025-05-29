@@ -193,7 +193,9 @@ const CartPage = () => {
           </div>
         </div>
       </Container>
-      <Toaster position="top-center" />
+      <div className="font-heading">
+        <Toaster position="top-center" />
+      </div>
     </div>
   );
 };

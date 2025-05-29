@@ -24,7 +24,7 @@ const AddToCartButton = ({ product, disabled }: AddToCartButtonProps) => {
 
   const addItems = () => {
     addItem(product);
-    toast.success(`${product.name} sucessfully added to cart`);
+    toast.success(`${product.name} added to cart`);
   };
 
   return (
