@@ -13,16 +13,15 @@ import Faq from "@/components/faq";
 import Testimonials from "@/components/testimonials";
 import FeaturesSection from "@/components/features_section";
 
-export const dynamic = "force-static"
+export const dynamic = "force-static";
 export const revalidate = 60;
 
 const Home = async () => {
   const banner = await getActiveBanner();
   const popularProducts = await getAllPopularProducts();
   const featuredCategories = await getFeaturedCategories();
-  const faq = await getFaq()
-  const testimonials = await getAllTestimonials()
-
+  const faq = await getFaq();
+  const testimonials = await getAllTestimonials();
 
   // Uncomment this for debugging:
   // console.log(
@@ -36,13 +35,14 @@ const Home = async () => {
       <ProductView products={products} categories={categories} /> */}
       <BannerSection banner={banner} />
       <About />
-      <FeaturesSection />
+      <div>
+        <FeaturesSection />
+      </div>
       <PopularGrid popularProducts={popularProducts} />
       <Categories featuredCategories={featuredCategories} />
       <Faq allFaq={faq} />
       <Cta />
       <Testimonials testimonials={testimonials} />
-
     </div>
   );
 };

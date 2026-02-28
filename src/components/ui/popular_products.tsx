@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,38 +9,62 @@ const PopularProducts = ({ popularProduct }: { popularProduct: Product }) => {
   const isOutOfStock = (popularProduct.stock || 0) <= 0;
 
   return (
-    <div className="transition overflow-hidden bg-white dark:bg-gray-900 rounded-md">
+    <div className="group relative w-full">
       <Link
-        href={`/popularProduct/${popularProduct.slug?.current}`}
-        className="block group relative"
+        href={`/product/${popularProduct.slug?.current}`}
+        className="block"
       >
-        {/* Product Image */}
-        {popularProduct.images && popularProduct.images[0] && (
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md">
+        {/* Aspect Ratio 4:5 - Product Floats on the Section Background */}
+        <div className="relative aspect-[4/5] w-full overflow-hidden">
+          {popularProduct.images?.[0] && (
             <Image
               src={imageUrl(popularProduct.images[0]).url()}
-              alt={popularProduct.name || 'Popular Product'}
+              alt={popularProduct.name || ''}
               fill
-              className={`object-cover group-hover:scale-105 transition-transform duration-300 rounded-md ${
-                isOutOfStock ? 'opacity-50' : ''
+              className={`object-cover transition-all duration-[1.5s] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-105 ${
+                isOutOfStock ? 'opacity-10 grayscale' : 'opacity-100'
               }`}
             />
-            {isOutOfStock && (
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                <span className="text-white font-bold text-lg">Out of Stock</span>
-              </div>
-            )}
-          </div>
-        )}
+          )}
 
-        {/* Product Info */}
-        <div className="p-4 flex flex-col justify-center align-center">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 truncate">
-            {popularProduct.name}
-          </h2>
-          <p className="text-sm text-gray-900 dark:text-gray-300 mt-1">
-            $ {popularProduct.price?.toFixed(2)}
-          </p>
+          {/* Technical Framing (Transparent) */}
+          <div className="absolute inset-0 border border-black/[0.03] group-hover:border-orange-500/20 transition-colors duration-700" />
+          
+          {/* Subtle Scan Line */}
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-black/[0.05] group-hover:bg-orange-500/30 group-hover:top-full transition-all duration-[2s] linear" />
+
+          {isOutOfStock && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-[10px] uppercase tracking-[0.8em] text-black/20 font-mono">
+                OUT_OF_SPEC
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Floating Details (No card background) */}
+        <div className="mt-10 px-2">
+          <div className="flex justify-between items-end">
+            <div className="space-y-2">
+               <div className="flex gap-1">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="size-[2px] bg-orange-500/40" />
+                  ))}
+               </div>
+               <h2 className="text-lg font-light tracking-tight text-black uppercase">
+                 {popularProduct.name}
+               </h2>
+               <p className="text-[9px] text-black/30 font-mono tracking-widest uppercase">
+                 Textile_Ref: {popularProduct._id.slice(0, 8)}
+               </p>
+            </div>
+            <div className="flex flex-col items-end">
+                <span className="text-xl font-serif italic text-black/80">
+                   ${popularProduct.price?.toLocaleString()}
+                </span>
+                <span className="text-[8px] text-orange-500/60 font-mono">0.00_LBS</span>
+            </div>
+          </div>
         </div>
       </Link>
     </div>

@@ -308,3 +308,27 @@ html.lenis body {
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
+@keyframes progress-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes loading-bar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-progress-grow {
+  animation: progress-grow 5s linear infinite;
+}
+
+.animate-loading-bar {
+  animation: loading-bar 1.5s ease-in-out infinite;
+}
+
+.grain-overlay {
+  pointer-events: none;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  filter: contrast(150%) brightness(1000%);
+  @apply fixed inset-0 z-[99] opacity-[0.03];
+}

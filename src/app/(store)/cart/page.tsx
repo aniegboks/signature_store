@@ -7,18 +7,16 @@ import { useRouter } from "next/navigation";
 import Container from "@/components/ui/container";
 import { imageUrl } from "@/lib/imageUrl";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { X, Plus, Minus, ShoppingBag } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "@/components/ui/loader";
 import Button from "@/components/ui/button";
 import { createCheckoutSession, Metadata } from "@/action/createCheckkoutSession";
 
-// Optional: define metadata type if needed
-// type Metadata = { orderNumber: string; customerName: string; customerEmail: string; clerkUserId: string };
-
 const CartPage = () => {
   const groupItems = useCartStore((state) => state.getGroupedItems());
   const removeItem = useCartStore((state) => state.removeItem);
+  const addItem = useCartStore((state) => state.addItem); 
   const getTotalPrice = useCartStore((state) => state.getTotalPrice);
   const { isSignedIn } = useAuth();
   const { user } = useUser();
@@ -35,24 +33,8 @@ const CartPage = () => {
 
   const totalPrice = getTotalPrice().toFixed(2);
 
-  const handleCheckout = () => {
-    if (groupItems.length === 0) {
-      toast.error("Your cart is empty!");
-      return;
-    }
-
-    if (!isSignedIn) {
-      toast.error("Please sign in to proceed to checkout.");
-      router.push("/sign-in");
-      return;
-    }
-
-    router.push("/checkout");
-  };
-
   const handleOrderCheckout = async () => {
     if (!isSignedIn) return;
-
     setIsLoading(true);
 
     try {
@@ -65,7 +47,7 @@ const CartPage = () => {
 
       const response = await createCheckoutSession(groupItems, metadata);
 
-      if (response.success) {
+      if (response.success && response.message) {
         window.location.href = response.message;
       } else {
         toast.error(response.message || "Checkout failed.");
@@ -78,124 +60,159 @@ const CartPage = () => {
     }
   };
 
-
   if (groupItems.length === 0) {
     return (
-      <div className="py-32">
+      <div className="py-48 min-h-screen bg-[#F5F5F5]">
         <Container>
-          <div className="text-xl text-gray-500 font-heading">Your cart is empty.</div>
-          <div className="w-full flex items-start justify-start mt-24">
-            <div className="bg-neutral-100 p-8 rounded-md w-[280px]">
-              <div className=" p-6 rounded-md">
-                <p className="text-lg font-bold mb-4 font-heading">Order Summary</p>
-                <hr className="text-neutral-300 mb-4" />
-                <div className="flex items-center justify-between text-sm">
-                  <p>Order Total:</p>
-                  <span className="font-medium">$0.00</span>
-                </div>
-                {isSignedIn ? (
-                  <div>
-                    <Button className="mt-6 w-full" variant="secondary" onClick={handleCheckout}>
-                      Checkout
-                    </Button>
-                  </div>
-                ) : (
-                  <SignInButton mode="modal">
-                    <div>
-                      <Button className="mt-6 w-full" variant="secondary">
-                        Sign in
-                      </Button>
-                    </div>
-                  </SignInButton>
-                )}
-              </div>
+          <div className="flex flex-col items-center justify-center text-center">
+            <div className="size-20 bg-black/10 rounded-full flex items-center justify-center mb-8">
+              <ShoppingBag className="text-black" size={32} />
             </div>
+            <h1 className="text-4xl font-serif italic uppercase tracking-tighter mb-4 text-black">Your Cart is Empty</h1>
+            <p className="text-black/60 font-mono text-xs uppercase tracking-widest mb-12">No_Items_Detected_In_Buffer</p>
+            <Button onClick={() => router.push("/")} variant="secondary">
+              Return to Catalog
+            </Button>
           </div>
         </Container>
-        <Toaster position="top-center" />
       </div>
     );
   }
 
   return (
-    <div className="py-32">
+    <div className="py-32 md:py-48 min-h-screen bg-[#F5F5F5]">
       <Container>
-        <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
-        <div className="flex flex-col lg:flex-row gap-x-28">
-          <div className="flex-grow space-y-6">
-            {groupItems.map((item) => (
+        {/* PAGE HEADER */}
+        <div className="flex items-end gap-4 mb-16 border-b border-black/10 pb-8">
+          <h1 className="text-5xl md:text-7xl font-serif italic text-black leading-none uppercase tracking-tighter">
+            Cart
+          </h1>
+          <span className="text-[10px] font-mono text-black/40 uppercase tracking-[0.3em] mb-2 font-bold">
+            Items_Count // {groupItems.length}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          {/* ITEMS LIST */}
+          <div className="lg:col-span-8 space-y-4">
+            {groupItems.map((item, index) => (
               <div
                 key={item.product._id}
-                className="py-8  rounded-md transition cursor-pointer flex sm:flex-row flex-col justify-between"
-                onClick={() => router.push(`/product/${item.product.slug?.current}`)}
+                className="group relative bg-white p-6 flex flex-col md:flex-row gap-8 items-center transition-all border border-black/5 hover:border-[#f97316]/30 shadow-sm"
               >
-                <div className="flex  gap-4">
-                  <div className="w-48 h-48 flex-shrink-0 relative">
-                    {item.product.images && (
-                      <Image
-                        src={imageUrl(item.product.images[0]).url()}
-                        alt={item.product.name || "Product image"}
-                        fill
-                        className="object-cover rounded"
-                      />
-                    )}
-                  </div>
-                  <div className="flex flex-col flex-groww-0 w-20">
-                    <div className="font-bold font-heading">{item.product.name}</div>
-                    <div className="text-sm text-gray-500 mt-2">${item.product.price}</div>
+                {/* INDEX NODE */}
+                <span className="absolute top-4 left-4 text-[8px] font-mono text-black/40 font-bold">0{index + 1}</span>
+
+                {/* IMAGE CONTAINER */}
+                <div 
+                  className="w-40 h-40 bg-[#F9F9F9] p-4 cursor-pointer overflow-hidden border border-black/5"
+                  onClick={() => router.push(`/product/${item.product.slug?.current}`)}
+                >
+                  {item.product.images && (
+                    <Image
+                      src={imageUrl(item.product.images[0]).url()}
+                      alt={item.product.name || "Product"}
+                      width={160}
+                      height={160}
+                      className="object-contain w-full h-full group-hover:scale-110 transition-transform duration-500"
+                    />
+                  )}
+                </div>
+
+                {/* INFO */}
+                <div className="flex-grow text-center md:text-left">
+                  <h3 className="text-2xl font-serif italic uppercase tracking-tight mb-1 text-black">{item.product.name}</h3>
+                  <p className="text-[10px] font-mono text-[#f97316] uppercase tracking-widest mb-6 font-bold">
+                    Type: {item.product.tag || "Standard_Issue"}
+                  </p>
+                  
+                  {/* QUANTITY CONTROLS */}
+                  <div className="flex items-center justify-center md:justify-start gap-4">
+                    <button 
+                      onClick={() => removeItem(item.product._id)}
+                      className="size-10 flex items-center justify-center border border-black/10 text-black hover:bg-black hover:text-white transition-colors"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="font-mono text-base font-bold w-6 text-center text-black">{item.quantity}</span>
+                    <button 
+                      onClick={() => addItem(item.product)}
+                      className="size-10 flex items-center justify-center border border-black/10 text-black hover:bg-black hover:text-white transition-colors"
+                    >
+                      <Plus size={14} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex justify-between h-10 items-center">
-                  <div className="flex items-start justify-center">
-                    <div className="text-sm px-4 text-neutral-600">Quantity:{item.quantity}</div>
-                    <span>|</span>
-                    <div className="text-sm text-neutral-600 px-4">Type: {item.product.tag}</div>
-                  </div>
-                  <div
-                    className="h-8 w-8 rounded-full shadow-sm flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-transform duration-200 transform hover:scale-110 cursor-pointer group"
+
+                {/* PRICE & REMOVE */}
+                <div className="flex flex-col items-end justify-between self-stretch py-2">
+                  <p className="font-mono text-xl font-bold text-black">
+                    ${(item.product.price! * item.quantity).toFixed(2)}
+                  </p>
+                  <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeItem(item.product._id);
-                      toast.success(`${item.product.name} removed from cart.`);
+                      removeItem(item.product._id); 
+                      toast.success("Item removed");
                     }}
+                    className="text-[10px] font-mono text-black/40 hover:text-red-600 uppercase tracking-widest transition-colors flex items-center gap-2 font-bold"
                   >
-                    <X size={14} className="text-neutral-700 transition-transform duration-200 group-hover:scale-110" />
-                  </div>
+                    <X size={14} /> Remove_Node
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-        <hr className="mt-2 text-neutral-300" />
 
+          {/* SUMMARY SIDEBAR */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-40 bg-black p-8 shadow-2xl border border-white/10">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="bg-[#f97316] text-black px-2 py-1 text-[10px] font-mono font-bold uppercase tracking-widest">
+                  Order_Summary
+                </span>
+              </div>
 
-        {/* Order Summary */}
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between text-[11px] font-mono text-white/50 uppercase tracking-widest font-bold">
+                  <span>Subtotal</span>
+                  <span className="text-white">${totalPrice}</span>
+                </div>
+                <div className="flex justify-between text-[11px] font-mono text-white/50 uppercase tracking-widest font-bold">
+                  <span>Shipping</span>
+                  <span className="text-[#f97316]">TBD</span>
+                </div>
+                <div className="h-px bg-white/20 my-6" />
+                <div className="flex justify-between items-end">
+                  <span className="font-serif italic text-2xl text-white">Total</span>
+                  <span className="text-3xl font-mono text-[#f97316] font-bold">${totalPrice}</span>
+                </div>
+              </div>
 
-        <div className="w-full flex items-start justify-start">
-          <div className="bg-neutral-100 p-8 rounded-md w-[280px]">
-            <p className="text-lg  mb-4 font-heading font-bold">Order Summary</p>
-            <hr className="text-neutral-300 mb-4" />
-            <div className="flex items-center justify-between text-sm">
-              <p>Order Total:</p>
-              <span className="font-medium">${totalPrice}</span>
-            </div>
-            {isSignedIn ? (
-              <Button className="mt-6 w-full" variant="secondary" onClick={handleOrderCheckout} disabled={isLoading}>
-                {isLoading ? "Processing..." : "Checkout"}
-              </Button>
-            ) : (
-              <SignInButton mode="modal">
-                <Button className="mt-6 w-full" variant="secondary">
-                  Sign in
+              {isSignedIn ? (
+                <Button 
+                  className="w-full py-8 text-lg font-bold uppercase tracking-widest bg-[#f97316] hover:bg-white text-black transition-all" 
+                  onClick={handleOrderCheckout} 
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Processing..." : "Initiate Checkout"}
                 </Button>
-              </SignInButton>
-            )}
+              ) : (
+                <SignInButton mode="modal">
+                  <Button className="w-full py-8 text-lg font-bold bg-white text-black hover:bg-[#f97316]">
+                    Sign In
+                  </Button>
+                </SignInButton>
+              )}
+
+              <p className="mt-8 text-[9px] font-mono text-white/30 uppercase text-center tracking-[0.3em] font-bold">
+                Transmission_Secure // AES_256
+              </p>
+            </div>
           </div>
         </div>
       </Container>
-      <div className="font-heading">
-        <Toaster position="top-center" />
-      </div>
+      <Toaster position="bottom-right" />
     </div>
   );
 };

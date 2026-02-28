@@ -1,9 +1,7 @@
 export const nav = [
-    { name: "Home", label: "https://signature-nu-one.vercel.app/" },
-    { name: "About", label: "https://signature-nu-one.vercel.app/about" },
+    { name: "Home", label: "/" },
     { name: "Hoodies", label: "/category/hoodies" },
     { name: "Blazers", label: "/category/blazers" },
-    { name: "Contact", label: "https://signature-nu-one.vercel.app/contact" }
 ]
 
 export const contactNav = [
