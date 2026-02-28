@@ -103,9 +103,9 @@ const FeaturesSection = () => {
                            </div>
 
                            <div className="absolute -right-16 top-1/4 space-y-3 font-mono text-[7px] text-black/30 text-right">
-                              <p className="flex items-center justify-end gap-2">REINFORCED_SEAM <div className="size-1 bg-black/10 rounded-full" /></p>
-                              <p className="flex items-center justify-end gap-2">ARTICULATED_ELBOW <div className="size-1 bg-black/10 rounded-full" /></p>
-                              <p className="flex items-center justify-end gap-2 text-orange-500/50 font-bold">TECH_POCKET_v2 <div className="size-1 bg-orange-500/50 rounded-full" /></p>
+                              <span className="flex items-center justify-end gap-2">REINFORCED_SEAM <div className="size-1 bg-black/10 rounded-full" /></span>
+                              <span className="flex items-center justify-end gap-2">ARTICULATED_ELBOW <div className="size-1 bg-black/10 rounded-full" /></span>
+                              <span className="flex items-center justify-end gap-2 text-orange-500/50 font-bold">TECH_POCKET_v2 <div className="size-1 bg-orange-500/50 rounded-full" /></span>
                            </div>
                         </div>
                     </div>

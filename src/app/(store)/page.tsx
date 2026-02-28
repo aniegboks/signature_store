@@ -35,9 +35,7 @@ const Home = async () => {
       <ProductView products={products} categories={categories} /> */}
       <BannerSection banner={banner} />
       <About />
-      <div>
-        <FeaturesSection />
-      </div>
+      <FeaturesSection />
       <PopularGrid popularProducts={popularProducts} />
       <Categories featuredCategories={featuredCategories} />
       <Faq allFaq={faq} />
