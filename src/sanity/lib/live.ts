@@ -1,23 +1,22 @@
-// Querying with "sanityFetch" will keep content automatically updated
-// Before using it, import and render "<SanityLive />" in your layout, see
-// https://github.com/sanity-io/next-sanity#live-content-api for more information.
 import "server-only";
 
-import { defineLive } from "next-sanity";
+// 1. Update this import path to point to the /live subpath
+import { defineLive } from "next-sanity/live"; 
 import { client } from "./client";
 
 const token = process.env.SANITY_READ_API_TOKEN;
 if (!token) {
-  throw new Error("missing sanity rad api token");
+  throw new Error("Missing SANITY_READ_API_TOKEN in environment variables");
 }
+
 export const { sanityFetch, SanityLive } = defineLive({
   client: client.withConfig({
-    // Live content is currently only available on the experimental API
-    // https://www.sanity.io/docs/api-versioning
-    apiVersion: 'vX'
+    apiVersion: 'vX' 
   }),
   serverToken: token,
   browserToken: token,
+  // Note: If you are on the absolute newest versions of next-sanity (v13+), 
+  // the fetchOptions property has actually been removed and you can delete this block!
   fetchOptions: {
     revalidate: 0
   }
