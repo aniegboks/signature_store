@@ -7,7 +7,7 @@ export type CartItem = {
   quantity: number;
 };
 
-type CartState = {
+export type CartState = {
   items: CartItem[];
   addItem: (product: Product) => void;
   removeItem: (productId: string) => void; // Removes ONE unit

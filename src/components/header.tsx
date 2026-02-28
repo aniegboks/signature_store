@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ShoppingBag, X, Menu, Terminal } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { nav } from "@/utils";
-import { useCartStore } from "@/store/store";
+import { useCartStore, CartState } from "@/store/store";
 
 const Header = () => {
   const { user } = useUser();
@@ -15,8 +15,8 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const lastY = useRef(0);
 
-  const itemCount = useCartStore((state) =>
-    state.items.reduce((total, item) => total + item.quantity, 0),
+  const itemCount = useCartStore((state: CartState) =>
+    state.items.reduce((total: number, item: { quantity: number }) => total + item.quantity, 0),
   );
 
   useEffect(() => {

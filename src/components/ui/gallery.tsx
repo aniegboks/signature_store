@@ -19,12 +19,12 @@ const shutterVariants = {
   visible: { 
     clipPath: 'inset(0% 0 0% 0)', 
     opacity: 1,
-    transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], staggerChildren: 0.1, delayChildren: 0.3 } 
+    transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] as const, staggerChildren: 0.1, delayChildren: 0.3 } 
   },
   exit: { 
     clipPath: 'inset(50% 0 50% 0)', 
     opacity: 0,
-    transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] } 
+    transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const } 
   }
 };
 
@@ -34,13 +34,13 @@ const uiVariants = {
     opacity: 1, 
     y: 0, 
     filter: 'blur(0px)',
-    transition: { duration: 0.6, ease: "easeOut" } 
+    transition: { duration: 0.6, ease: "easeOut" as const } 
   }
 };
 
 const imageVariants = {
   hidden: { scale: 1.1, opacity: 0 },
-  visible: { scale: 1, opacity: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
+  visible: { scale: 1, opacity: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const } }
 };
 
 const Gallery = ({ product, isOutOfStock }: GalleryProps) => {
