@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { RevealAnimation } from '@/utils/reveal_animation';
 import Container from './ui/container';
 import Image from 'next/image';
-import { Scan, Cpu, Layers, Box, Activity, Compass } from 'lucide-react';
+import { Scan, Cpu, Layers, Activity, Compass } from 'lucide-react';
 
 const BentoCard = ({ 
   title, 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Quote, Fingerprint } from 'lucide-react';
+import { Fingerprint } from 'lucide-react';
 
 type TestimonialsCardProps = {
   title: string;
@@ -35,7 +35,7 @@ const TestimonialCard = ({
       <div className="space-y-8">
         {/* Testimonial Quote: Small, Italic, Clean */}
         <p className="text-xl md:text-2xl font-serif italic font-light text-black/80 leading-relaxed tracking-tight">
-          "{testimonial || "The level of precision in the textile weave is unparalleled. A true system of luxury."}"
+          &quot;{testimonial || "The level of precision in the textile weave is unparalleled. A true system of luxury."}&quot;
         </p>
 
         <div className="pt-8 border-t border-black/[0.03]">

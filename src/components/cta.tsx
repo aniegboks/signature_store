@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Expand, X, Gauge, Zap, Crosshair } from 'lucide-react';
+import { Expand, X, Zap, Crosshair } from 'lucide-react';
 import Container from './ui/container';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

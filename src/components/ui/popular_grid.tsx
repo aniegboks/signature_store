@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import Container from './container';
 import { ALL_POPULAR_PRODUCTS_QUERYResult } from '../../../sanity.types';
 import PopularProducts from './popular_products';
@@ -106,7 +106,7 @@ const PopularGrid: React.FC<PopularGridProps> = ({ popularProducts }) => {
                             */
                             className="min-w-[80%] sm:min-w-[45%] lg:min-w-[23.5%] flex-shrink-0"
                         >
-                            <PopularProducts popularProduct={popularProduct as any} />
+                            <PopularProducts popularProduct={popularProduct as ALL_POPULAR_PRODUCTS_QUERYResult[number]} />
                         </div>
                     ))}
                 </div>

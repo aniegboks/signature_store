@@ -5,7 +5,7 @@ import { ALL_TESTIMONIALS_QUERYResult } from '../../sanity.types';
 import { imageUrl } from '@/lib/imageUrl';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Fingerprint, Activity, Shield, Cpu, Zap } from 'lucide-react';
+import { Fingerprint, Activity, Zap } from 'lucide-react';
 
 type TestimonialsProps = {
   testimonials: ALL_TESTIMONIALS_QUERYResult;
@@ -32,7 +32,7 @@ const Testimonials = ({ testimonials }: TestimonialsProps) => {
       clearInterval(interval);
       clearInterval(progressInterval);
     };
-  }, [activeIndex, testimonials?.length]);
+  }, [activeIndex, testimonials?.length, testimonials]);
 
   if (!testimonials || testimonials.length === 0) return null;
 
@@ -92,11 +92,11 @@ const Testimonials = ({ testimonials }: TestimonialsProps) => {
                     transition={{ duration: 0.5 }}
                 >
                     <p className="text-sm md:text-base text-neutral-600 leading-relaxed font-light italic max-w-md">
-                      "{current?.testimonial}"
+                      {current?.testimonial}
                     </p>
                     <div className="mt-4">
                         <span className="text-black font-mono text-[8px] uppercase tracking-[0.4em]">
-                          // {current?.socialHandle}
+                         &quot;{current?.socialHandle}&quot;
                         </span>
                     </div>
                 </motion.div>

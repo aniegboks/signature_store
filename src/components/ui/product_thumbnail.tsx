@@ -62,7 +62,7 @@ const ProductThumbnail = ({ product, index }: { product: Product; index: number 
               {product.name}
             </h2>
             <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-black/40">
-              {(product as any).category || "Essential Archive"}
+              {product.categories?.[0] ? "Category" : "Essential Archive"}
             </p>
           </div>
           

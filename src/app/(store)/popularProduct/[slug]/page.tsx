@@ -78,7 +78,7 @@ const Product = async ({ params }: ProductProps) => {
                       ${product.price?.toFixed(2)}
                     </span>
                     <span className="text-[10px] font-mono text-black/30 uppercase tracking-widest">
-                      // USD_INTL
+                      USD_INTL
                     </span>
                   </div>
                 </div>

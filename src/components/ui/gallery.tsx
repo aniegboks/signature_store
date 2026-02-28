@@ -86,7 +86,7 @@ const Gallery = ({ product, isOutOfStock }: GalleryProps) => {
       document.body.style.overflow = 'auto';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isFullscreen, mainImageIndex]);
+  }, [isFullscreen, mainImageIndex, nextImage, prevImage]);
 
   return (
     <div className="w-full h-full font-mono">

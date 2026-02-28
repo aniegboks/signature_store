@@ -20,10 +20,34 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
   const images = currentBanner?.images || [];
   const TOTAL_DURATION = 6;
 
-  // Keep Ref in sync with State
-  useEffect(() => {
-    indexRef.current = index;
-  }, [index]);
+  const goToSlide = (next: number) => {
+    // Check isAnimating ref/state to prevent double triggers
+    if (isAnimating) return;
+    setIsAnimating(true);
+    
+    const tl = gsap.timeline({
+      onComplete: () => { 
+        setIsAnimating(false); 
+      }
+    });
+
+    tl.to(imageRef.current, { 
+      clipPath: "inset(0% 50% 0% 50%)", 
+      filter: "brightness(4) saturate(0)",
+      duration: 0.4, 
+      ease: "power4.inOut",
+      onComplete: () => {
+        // Change the actual state exactly when the "shutters" are closed
+        setIndex(next);
+      }
+    })
+    .to(imageRef.current, { 
+      clipPath: "inset(0% 0% 0% 0%)", 
+      filter: "brightness(1) saturate(1.1)",
+      duration: 0.8, 
+      ease: "expo.out" 
+    });
+  };
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -55,36 +79,11 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isLoaded, images.length]); // Added images.length as dependency
+  }, [isLoaded, images.length, goToSlide, indexRef]); // Added all dependencies
 
-  const goToSlide = (next: number) => {
-    // Check isAnimating ref/state to prevent double triggers
-    if (isAnimating) return;
-    setIsAnimating(true);
-    
-    const tl = gsap.timeline({
-      onComplete: () => { 
-        setIsAnimating(false); 
-      }
-    });
-
-    tl.to(imageRef.current, { 
-      clipPath: "inset(0% 50% 0% 50%)", 
-      filter: "brightness(4) saturate(0)",
-      duration: 0.4, 
-      ease: "power4.inOut",
-      onComplete: () => {
-        // Change the actual state exactly when the "shutters" are closed
-        setIndex(next);
-      }
-    })
-    .to(imageRef.current, { 
-      clipPath: "inset(0% 0% 0% 0%)", 
-      filter: "brightness(1) saturate(1.1)",
-      duration: 0.8, 
-      ease: "expo.out" 
-    });
-  };
+  useEffect(() => {
+    indexRef.current = index;
+  }, [index]);
 
   const manualNext = () => {
     const next = (index + 1) % images.length;
@@ -100,7 +99,8 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
         {/* TELEMETRY */}
         <div className="absolute top-8 w-full px-12 flex justify-between items-center hud-element z-30 opacity-0 translate-y-6">
           <div className="text-[10px] text-white tracking-[0.4em] font-bold uppercase">
-              ID_{currentBanner?._id?.slice(0,8)} // STREAM_0{(index + 1)}
+              {/* STREAM_ID calculation */}
+              ID_{currentBanner?._id?.slice(0,8)} {/* STREAM_0{(index + 1)} */}
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[8px] text-white/30 tracking-widest uppercase">Encryption: AES-256</span>

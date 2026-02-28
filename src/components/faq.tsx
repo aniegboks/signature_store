@@ -18,7 +18,7 @@ const Faq = ({ allFaq }: FaqProps) => {
     const imageRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
-        let ctx = gsap.context(() => {
+        const ctx = gsap.context(() => {
             // Reveal animation
             gsap.from(".faq-reveal", {
                 y: 20,

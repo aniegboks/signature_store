@@ -16,7 +16,7 @@ const TypeAnimation = () => {
         }, swapDelay);
 
         return () => clearInterval(intervalId);
-    }, []);
+    }, [wordAnimation.length]);
 
     const currentWord = wordAnimation[animationIndex];
 

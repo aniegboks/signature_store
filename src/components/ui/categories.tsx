@@ -20,7 +20,7 @@ const Categories = ({ featuredCategories }: CategoriesProps) => {
   const needleRef = useRef<SVGLineElement>(null);
 
   useLayoutEffect(() => {
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       // 1. SPEEDOMETER NEEDLE ANIMATION
       gsap.to(needleRef.current, {
         rotation: 180,
@@ -35,8 +35,9 @@ const Categories = ({ featuredCategories }: CategoriesProps) => {
       });
 
       // 2. STRIP REVEAL
-      gsap.utils.toArray('.category-strip').forEach((strip: any) => {
-        gsap.from(strip.querySelector('.strip-inner'), {
+      gsap.utils.toArray<HTMLDivElement>('.category-strip').forEach((strip) => {
+        console.log(`strip is: ${strip}`);
+        gsap.from(strip?.querySelector('.strip-inner'), {
           scaleX: 0.95,
           opacity: 0,
           duration: 1.5,
