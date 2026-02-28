@@ -32,8 +32,9 @@ export const PageLoader = ({ onFinished }: { onFinished?: () => void }) => {
       v: 100,
       duration: 2.8,
       ease: "power4.inOut",
-      onUpdate() {
-        const n = Math.round((this as any).targets()[0].v);
+      onUpdate: function(this: { targets: () => Array<{ v: number }> }) {
+        const progress = this.targets()[0].v;
+        const n = Math.round(progress);
         if (counterRef.current) counterRef.current.textContent = n.toString().padStart(3, '0');
         if (gaugeRef.current) {
           const offset = 502 - (n / 100) * 502;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { imageUrl } from '@/lib/imageUrl';
 import { useGallery } from '../gallery_context';
@@ -51,20 +51,20 @@ const Gallery = ({ product, isOutOfStock }: GalleryProps) => {
   const galleryRef = useRef<HTMLDivElement>(null);
 
   // --- NAVIGATION LOGIC (Fixes the TS Error) ---
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     const nextIdx = (mainImageIndex + 1) % images.length;
     setMainImageIndex(nextIdx);
-  };
+  }, [mainImageIndex, images.length, setMainImageIndex]);
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     const prevIdx = (mainImageIndex - 1 + images.length) % images.length;
     setMainImageIndex(prevIdx);
-  };
+  }, [mainImageIndex, images.length, setMainImageIndex]);
 
-  const toggleDiagnosticMode = () => {
+  const toggleDiagnosticMode = useCallback(() => {
     if (isOutOfStock) return;
     setIsFullscreen(!isFullscreen);
-  };
+  }, [isFullscreen, isOutOfStock]);
 
   // --- KEYBOARD & SCROLL LOCK ---
   useEffect(() => {

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { ALL_FAQ_QUERYResult } from '../../sanity.types';
 import { imageUrl } from '@/lib/imageUrl';
 import gsap from 'gsap';
-import { Terminal, Plus, Minus, Info, Settings2 } from 'lucide-react';
+import { Terminal, Plus, Minus, Settings2 } from 'lucide-react';
 
 type FaqProps = {
     allFaq: ALL_FAQ_QUERYResult;
