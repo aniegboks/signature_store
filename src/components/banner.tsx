@@ -8,11 +8,11 @@ import { PageLoader } from './ui/svg_path_loader';
 
 const BannerSection = ({ banner }: { banner: Banner[] }) => {
   const [index, setIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   
-  // Create a ref to track index for GSAP closures
+  // Refs for logic to avoid re-triggering useEffects
   const indexRef = useRef(0);
+  const isAnimatingRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
@@ -20,49 +20,50 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
   const images = currentBanner?.images || [];
   const TOTAL_DURATION = 6;
 
+  // STABLE ANIMATION FUNCTION
   const goToSlide = (next: number) => {
-    // Check isAnimating ref/state to prevent double triggers
-    if (isAnimating) return;
-    setIsAnimating(true);
+    if (isAnimatingRef.current || !imageRef.current) return;
+    
+    isAnimatingRef.current = true;
     
     const tl = gsap.timeline({
-      onComplete: () => { 
-        setIsAnimating(false); 
+      onComplete: () => {
+        isAnimatingRef.current = false;
       }
     });
 
     tl.to(imageRef.current, { 
       clipPath: "inset(0% 50% 0% 50%)", 
-      filter: "brightness(4) saturate(0)",
-      duration: 0.4, 
+      filter: "brightness(3) saturate(0)",
+      duration: 0.5, 
       ease: "power4.inOut",
       onComplete: () => {
-        // Change the actual state exactly when the "shutters" are closed
         setIndex(next);
+        indexRef.current = next;
       }
     })
     .to(imageRef.current, { 
       clipPath: "inset(0% 0% 0% 0%)", 
-      filter: "brightness(1) saturate(1.1)",
+      filter: "brightness(1) saturate(1)",
       duration: 0.8, 
       ease: "expo.out" 
     });
   };
 
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || images.length === 0) return;
 
     const ctx = gsap.context(() => {
-      // Entrance for HUD
+      // 1. Entrance Animations
       gsap.to(".hud-element", {
         opacity: 1,
         y: 0,
-        duration: 1.2,
+        duration: 1,
         stagger: 0.1,
-        ease: "expo.out",
+        ease: "power3.out",
       });
 
-      // Gauge Stagger - Fixing the slide trigger logic
+      // 2. Persistent Progress Gauge
       const segments = gsap.utils.toArray<HTMLElement>('.progress-segment');
       gsap.to(segments, {
         backgroundColor: (i) => i > 12 ? "#f97316" : "#ffffff",
@@ -71,7 +72,7 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
         stagger: TOTAL_DURATION / segments.length,
         repeat: -1,
         onRepeat: () => {
-          // Use the current ref value to calculate next slide
+          // Calculate next index using the Ref
           const next = (indexRef.current + 1) % images.length;
           goToSlide(next);
         },
@@ -79,99 +80,97 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isLoaded, images.length, goToSlide, indexRef]); // Added all dependencies
+  }, [isLoaded, images.length]); // Removed goToSlide from dependencies to stop the reset loop
 
-  useEffect(() => {
-    indexRef.current = index;
-  }, [index]);
-
-  const manualNext = () => {
-    const next = (index + 1) % images.length;
-    goToSlide(next);
-  };
+  const manualNext = () => manualGoTo((index + 1) % images.length);
+  const manualGoTo = (next: number) => goToSlide(next);
 
   return (
     <>
       <PageLoader onFinished={() => setIsLoaded(true)} />
 
-      <div ref={containerRef} className="relative w-full h-screen bg-[#050505] flex items-center justify-center font-mono overflow-hidden">
+      <div ref={containerRef} className="relative w-full h-screen bg-[#050505] flex flex-col items-center justify-center font-mono overflow-hidden">
         
-        {/* TELEMETRY */}
-        <div className="absolute top-8 w-full px-12 flex justify-between items-center hud-element z-30 opacity-0 translate-y-6">
-          <div className="text-[10px] text-white tracking-[0.4em] font-bold uppercase">
-              {/* STREAM_ID calculation */}
-              ID_{currentBanner?._id?.slice(0,8)} {/* STREAM_0{(index + 1)} */}
+        {/* TOP HUD: TELEMETRY */}
+        <div className="absolute top-0 w-full p-6 lg:p-12 flex justify-between items-start hud-element z-30 opacity-0 -translate-y-6">
+          <div className="space-y-1">
+            <div className="text-[10px] text-white tracking-[0.4em] font-bold uppercase">
+              SYS_ID: {currentBanner?._id?.slice(0,8)}
+            </div>
+            <div className="text-[8px] text-white/40 tracking-widest uppercase">Status: Operational</div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[8px] text-white/30 tracking-widest uppercase">Encryption: AES-256</span>
-            <div className="size-1.5 bg-orange-500 rounded-full animate-pulse" />
+            <span className="hidden md:block text-[8px] text-white/30 tracking-widest uppercase">256-BIT_ENCRYPT</span>
+            <div className="size-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
           </div>
         </div>
 
-        {/* IMAGE DISPLAY */}
-        <div className="relative z-20 hud-element opacity-0 translate-y-6">
-          <div ref={imageRef} className="relative w-[320px] lg:w-[480px] aspect-[4/5] bg-neutral-900 border border-white/5 p-1 shadow-2xl">
-            {/* Map through images to prevent Next.js flickering/reloading issues */}
-            {images.map((img, i) => (
-              <div key={i} className={`absolute inset-0 p-1 transition-opacity duration-100 ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
-                <Image 
-                  src={imageUrl(img).url()} 
-                  alt={`Archive View ${i}`} 
-                  fill 
-                  className="object-cover"
-                  priority={i === 0}
-                />
-              </div>
+        {/* MAIN DISPLAY AREA */}
+        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-12 z-20 w-full px-6">
+          
+          {/* SIDE GAUGE - Hidden on small mobile to prevent overlap */}
+          <div className="hidden lg:flex h-72 flex-col-reverse gap-1.5 hud-element opacity-0 translate-x-[-20px]">
+            {[...Array(20)].map((_, i) => (
+              <div key={i} className="progress-segment w-6 h-[1px] bg-white/10" />
             ))}
-            
-            {/* Corners */}
-            <div className="absolute -top-px -left-px size-4 border-t border-l border-orange-500 z-20" />
-            <div className="absolute -bottom-px -right-px size-4 border-b border-r border-orange-500 z-20" />
+            <div className="text-[8px] text-white/20 mb-6 -rotate-90 origin-left translate-x-3 tracking-[0.6em] font-bold">ARC_VELOCITY</div>
           </div>
-        </div>
 
-        {/* SIDE VELOCITY GAUGE */}
-        <div className="absolute left-12 h-72 flex flex-col-reverse gap-1.5 hud-element opacity-0 translate-y-6">
-          {[...Array(20)].map((_, i) => (
-            <div key={i} className="progress-segment w-6 h-[2px] bg-white/5" />
-          ))}
-          <div className="text-[8px] text-white/20 mb-6 -rotate-90 origin-left translate-x-3 tracking-[0.6em] font-bold">RPM_INDICATOR</div>
-        </div>
-
-        {/* BRANDING MODULE */}
-        <div className="absolute bottom-12 left-12 hud-element space-y-6 opacity-0 translate-y-6">
-          <div className="space-y-2">
-            <span className="text-orange-500 text-[10px] tracking-[0.6em] font-bold uppercase">Signature_Archive</span>
-            <h1 className="text-5xl lg:text-7xl text-white font-serif italic tracking-tighter leading-none">
-              {currentBanner?.name || "The_Collection"}
-            </h1>
-          </div>
-          <div className="max-w-xs border-l border-white/10 pl-6 space-y-3">
-             <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-[0.15em]">
-               {currentBanner?.description || "High-performance curation meets geometric discipline in the latest digital archive."}
-             </p>
-             <div className="text-[8px] text-orange-500/50 tracking-widest uppercase">Verified // 2026_CORE</div>
-          </div>
-        </div>
-
-        {/* PHASE CONTROLS */}
-        <div className="absolute bottom-12 right-12 flex flex-col items-end gap-10 hud-element opacity-0 translate-y-6">
-          <div className="flex flex-col items-end">
-            <span className="text-[9px] text-white/20 tracking-[0.4em] mb-2 uppercase">Current_Phase</span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-7xl font-mono italic text-white leading-none">0{index + 1}</span>
-              <span className="text-sm text-white/20 font-light">/ 0{images.length}</span>
+          {/* THE IMAGE BOX */}
+          <div className="hud-element opacity-0 scale-95 transition-transform duration-700">
+            <div ref={imageRef} className="relative w-[280px] sm:w-[350px] lg:w-[420px] aspect-[4/5] bg-neutral-900 border border-white/10 p-1.5 shadow-2xl">
+              {images.map((img, i) => (
+                <div key={i} className={`absolute inset-0 p-1.5 transition-opacity duration-700 ease-in-out ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
+                  <Image 
+                    src={imageUrl(img).url()} 
+                    alt="Archive" 
+                    fill 
+                    className="object-cover grayscale-[0.2] contrast-[1.1]"
+                    priority={i === 0}
+                  />
+                </div>
+              ))}
+              {/* Corner Accents */}
+              <div className="absolute -top-1 -left-1 size-6 border-t-2 border-l-2 border-orange-500 z-20" />
+              <div className="absolute -bottom-1 -right-1 size-6 border-b-2 border-r-2 border-orange-500 z-20" />
             </div>
           </div>
+
+          {/* BRANDING - Relative on mobile to prevent stacking */}
+          <div className="hud-element space-y-4 lg:space-y-8 max-w-sm text-center lg:text-left opacity-0 translate-x-[20px]">
+            <div className="space-y-2">
+              <span className="text-orange-500 text-[10px] tracking-[0.5em] font-bold uppercase block">Core_Archive_v1</span>
+              <h1 className="text-4xl lg:text-7xl text-white font-serif italic tracking-tighter leading-none">
+                {currentBanner?.name || "Collection"}
+              </h1>
+            </div>
+            <p className="text-[10px] text-white/50 leading-relaxed uppercase tracking-widest px-4 lg:px-0 border-white/10 lg:border-l lg:pl-6">
+              {currentBanner?.description}
+            </p>
+          </div>
+        </div>
+
+        {/* BOTTOM HUD: CONTROLS */}
+        <div className="absolute bottom-0 w-full p-6 lg:p-12 flex flex-row items-end justify-between hud-element z-30 opacity-0 translate-y-6">
+          <div className="flex flex-col">
+            <span className="text-[9px] text-white/20 tracking-[0.4em] mb-2 uppercase">Frame_Index</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-5xl lg:text-7xl font-mono italic text-white leading-none">0{index + 1}</span>
+              <span className="text-xs lg:text-sm text-white/20 font-light">/ 0{images.length}</span>
+            </div>
+          </div>
+
           <button 
             onClick={manualNext} 
-            className="group relative overflow-hidden h-14 px-12 bg-white text-black text-[10px] font-bold tracking-[0.4em] uppercase hover:text-white transition-colors duration-300"
+            className="group relative overflow-hidden h-12 lg:h-16 px-8 lg:px-14 bg-white text-black text-[10px] font-bold tracking-[0.4em] uppercase transition-all"
           >
-            <span className="relative z-10">Next_Phase</span>
+            <span className="relative z-10 group-hover:text-white transition-colors">Manual_Shift</span>
             <div className="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
           </button>
         </div>
 
+        {/* Scanline Effect Overlay */}
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-50 bg-[length:100%_2px,3px_100%]" />
       </div>
     </>
   );
