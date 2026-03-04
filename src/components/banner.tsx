@@ -80,7 +80,7 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isLoaded, images.length]); // Removed goToSlide from dependencies to stop the reset loop
+  }, [isLoaded, images.length]); 
 
   const manualNext = () => manualGoTo((index + 1) % images.length);
   const manualGoTo = (next: number) => goToSlide(next);
@@ -89,7 +89,8 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
     <>
       <PageLoader onFinished={() => setIsLoaded(true)} />
 
-      <div ref={containerRef} className="relative w-full h-screen bg-[#050505] flex flex-col items-center justify-center font-mono overflow-hidden">
+      {/* CHANGED: h-screen to min-h-[100svh], overflow-hidden to overflow-x-hidden, added py-32 for safe spacing */}
+      <div ref={containerRef} className="relative w-full min-h-[100svh] py-32 bg-[#050505] flex flex-col items-center justify-center font-mono overflow-x-hidden">
         
         {/* TOP HUD: TELEMETRY */}
         <div className="absolute top-0 w-full p-6 lg:p-12 flex justify-between items-start hud-element z-30 opacity-0 -translate-y-6">
@@ -133,10 +134,13 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
               {/* Corner Accents */}
               <div className="absolute -top-1 -left-1 size-6 border-t-2 border-l-2 border-orange-500 z-20" />
               <div className="absolute -bottom-1 -right-1 size-6 border-b-2 border-r-2 border-orange-500 z-20" />
+              
+              {/* CHANGED: Moved Scanline Effect Overlay here to only affect the image */}
+              <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-30 bg-[length:100%_2px,3px_100%]" />
             </div>
           </div>
 
-          {/* BRANDING - Relative on mobile to prevent stacking */}
+          {/* BRANDING */}
           <div className="hud-element space-y-4 lg:space-y-8 max-w-sm text-center lg:text-left opacity-0 translate-x-[20px]">
             <div className="space-y-2">
               <span className="text-orange-500 text-[10px] tracking-[0.5em] font-bold uppercase block">Core_Archive_v1</span>
@@ -169,8 +173,6 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
           </button>
         </div>
 
-        {/* Scanline Effect Overlay */}
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-50 bg-[length:100%_2px,3px_100%]" />
       </div>
     </>
   );
