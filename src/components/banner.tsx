@@ -37,6 +37,7 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
       filter: "brightness(3) saturate(0)",
       duration: 0.5, 
       ease: "power4.inOut",
+      force3D: true,
       onComplete: () => {
         setIndex(next);
         indexRef.current = next;
@@ -46,7 +47,8 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
       clipPath: "inset(0% 0% 0% 0%)", 
       filter: "brightness(1) saturate(1)",
       duration: 0.8, 
-      ease: "expo.out" 
+      ease: "expo.out",
+      force3D: true
     });
   };
 
@@ -72,7 +74,6 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
         stagger: TOTAL_DURATION / segments.length,
         repeat: -1,
         onRepeat: () => {
-          // Calculate next index using the Ref
           const next = (indexRef.current + 1) % images.length;
           goToSlide(next);
         },
@@ -89,8 +90,7 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
     <>
       <PageLoader onFinished={() => setIsLoaded(true)} />
 
-      {/* CHANGED: h-screen to min-h-[100svh], overflow-hidden to overflow-x-hidden, added py-32 for safe spacing */}
-      <div ref={containerRef} className="relative w-full min-h-[100svh] py-32 bg-[#050505] flex flex-col items-center justify-center font-mono overflow-x-hidden">
+      <div ref={containerRef} className="carousel-container relative w-full min-h-[100svh] py-32 bg-[#050505] flex flex-col items-center justify-center font-mono overflow-hidden">
         
         {/* TOP HUD: TELEMETRY */}
         <div className="absolute top-0 w-full p-6 lg:p-12 flex justify-between items-start hud-element z-30 opacity-0 -translate-y-6">
@@ -109,7 +109,7 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
         {/* MAIN DISPLAY AREA */}
         <div className="relative flex flex-col lg:flex-row items-center justify-center gap-12 z-20 w-full px-6">
           
-          {/* SIDE GAUGE - Hidden on small mobile to prevent overlap */}
+          {/* SIDE GAUGE */}
           <div className="hidden lg:flex h-72 flex-col-reverse gap-1.5 hud-element opacity-0 translate-x-[-20px]">
             {[...Array(20)].map((_, i) => (
               <div key={i} className="progress-segment w-6 h-[1px] bg-white/10" />
@@ -119,24 +119,30 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
 
           {/* THE IMAGE BOX */}
           <div className="hud-element opacity-0 scale-95 transition-transform duration-700">
-            <div ref={imageRef} className="relative w-[280px] sm:w-[350px] lg:w-[420px] aspect-[4/5] bg-neutral-900 border border-white/10 p-1.5 shadow-2xl">
-              {images.map((img, i) => (
-                <div key={i} className={`absolute inset-0 p-1.5 transition-opacity duration-700 ease-in-out ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
-                  <Image 
-                    src={imageUrl(img).url()} 
-                    alt="Archive" 
-                    fill 
-                    className="object-cover grayscale-[0.2] contrast-[1.1]"
-                    priority={i === 0}
-                  />
-                </div>
-              ))}
-              {/* Corner Accents */}
-              <div className="absolute -top-1 -left-1 size-6 border-t-2 border-l-2 border-orange-500 z-20" />
-              <div className="absolute -bottom-1 -right-1 size-6 border-b-2 border-r-2 border-orange-500 z-20" />
+            {/* 1. Static Outer Frame (Padding and Accents stay here) */}
+            <div className="relative w-[280px] sm:w-[350px] lg:w-[420px] aspect-[4/5] bg-neutral-900 border border-white/10 p-1.5 shadow-2xl">
               
-              {/* CHANGED: Moved Scanline Effect Overlay here to only affect the image */}
-              <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-30 bg-[length:100%_2px,3px_100%]" />
+              {/* 2. Animated Inner Frame (Isolates GSAP modifications from the layout) */}
+              <div ref={imageRef} className="relative w-full h-full overflow-hidden will-change-[clip-path,filter] transform-gpu contain-strict">
+                {images.map((img, i) => (
+                  <div key={i} className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
+                    <Image 
+                      src={imageUrl(img).url()} 
+                      alt="Archive" 
+                      fill 
+                      className="object-cover grayscale-[0.2] contrast-[1.1]"
+                      priority={i === 0}
+                    />
+                  </div>
+                ))}
+                
+                {/* Scanline Effect */}
+                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-30 bg-[length:100%_2px,3px_100%]" />
+              </div>
+
+              {/* Corner Accents (Safe outside the clip-path) */}
+              <div className="absolute -top-1 -left-1 size-6 border-t-2 border-l-2 border-orange-500 z-20 pointer-events-none" />
+              <div className="absolute -bottom-1 -right-1 size-6 border-b-2 border-r-2 border-orange-500 z-20 pointer-events-none" />
             </div>
           </div>
 
@@ -159,7 +165,8 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
           <div className="flex flex-col">
             <span className="text-[9px] text-white/20 tracking-[0.4em] mb-2 uppercase">Frame_Index</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl lg:text-7xl font-mono italic text-white leading-none">0{index + 1}</span>
+              {/* Added tabular-nums to prevent character width jumping */}
+              <span className="text-5xl lg:text-7xl font-mono italic text-white leading-none tabular-nums">0{index + 1}</span>
               <span className="text-xs lg:text-sm text-white/20 font-light">/ 0{images.length}</span>
             </div>
           </div>

@@ -330,5 +330,28 @@ html.lenis body {
   pointer-events: none;
   background-image: url("https://grainy-gradients.vercel.app/noise.svg");
   filter: contrast(150%) brightness(1000%);
-  @apply fixed inset-0 z-[99] opacity-[0.03];
+  @apply fixed inset-0 z-99 opacity-[0.03];
+}
+
+/* Prevent scrollbar flash during animations */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+/* Ensure smooth transitions without layout shifts */
+* {
+  box-sizing: border-box;
+}
+
+/* Prevent content overflow during animations */
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Fix for carousel animations causing scrollbar */
+.carousel-container {
+  overflow: hidden !important;
+  contain: layout style paint;
 }
