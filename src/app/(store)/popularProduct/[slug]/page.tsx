@@ -1,157 +1,156 @@
-import React from "react";
-import { notFound } from "next/navigation";
-import Container from "@/components/ui/container";
-import { getProductBySlug } from "@/sanity/lib/products/getProductBySlug";
-import Gallery from "@/components/ui/gallery";
-import Thumbnail from "@/components/ui/thumbnail";
-import { GalleryProvider } from "@/components/gallery_context";
-import { getRelatedProduct } from "@/sanity/lib/products/getRelatedProduct";
-import { RELATED_PRODUCT_BY_QUERYResult } from "../../../../../sanity.types";
-import RelatedProducts from "@/components/ui/related_product";
-import { Expand, ShieldCheck, Zap } from "lucide-react";
-import Size from "@/components/ui/size";
-import AddToCartButton from "@/components/ui/add_to_cart_button";
-import { RevealAnimation } from "@/utils/reveal_animation";
+import React from 'react';
+import { notFound } from 'next/navigation';
+import Container from '@/components/ui/container';
+import { getProductBySlug } from '@/sanity/lib/products/getProductBySlug';
+import Gallery from '@/components/ui/gallery';
+import Thumbnail from '@/components/ui/thumbnail';
+import { GalleryProvider } from '@/components/gallery_context';
+import RelatedProducts from '@/components/ui/related_product';
+import { PRODUCT_BY_QUERY_IDResult, RELATED_PRODUCT_BY_QUERYResult } from '../../../../../sanity.types';
+import { getRelatedProduct } from '@/sanity/lib/products/getRelatedProduct';
+import Size from '@/components/ui/size';
+import AddToCartButton from '@/components/ui/add_to_cart_button';
+import { RevealAnimation } from '@/utils/reveal_animation';
+
+// Safe Type Extension for Sanity Colors
+interface ExtendedColor {
+  hex?: string;
+  name?: string;
+}
 
 type ProductProps = {
-  params: Promise<{ slug: string }>;
-};
+  params: Promise<{ slug: string }>
+}
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
 
 const Product = async ({ params }: ProductProps) => {
   const { slug } = await params;
+  const product: PRODUCT_BY_QUERY_IDResult = await getProductBySlug(slug);
 
-  const product = await getProductBySlug(slug);
-  if (!product) return notFound();
-
-  const relatedProductResponse = await getRelatedProduct(slug);
-  const relatedProduct =
-    relatedProductResponse?.data as RELATED_PRODUCT_BY_QUERYResult;
-
+  if (!product) {
+    return notFound();
+  }
   const isOutOfStock = product.stock != null && product.stock <= 0;
 
+  const relatedProductResponse = await getRelatedProduct(slug);
+  const relatedProduct = relatedProductResponse?.data as RELATED_PRODUCT_BY_QUERYResult;
+
+  // Casting to our extended interface for safe property access
+  const productColor = product.color as ExtendedColor;
+
   return (
-    <div className="bg-[#F5F5F5] min-h-screen py-32 md:py-48">
+    <div className='relative min-h-screen bg-neutral-50 py-32 md:py-40 text-neutral-900'>
       <Container>
         <RevealAnimation>
           <GalleryProvider>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-              {/* --- LEFT: VISUAL ASSET CORE --- */}
-              <div className="lg:col-span-7 space-y-6">
-                <div
-                  className={`relative aspect-square overflow-hidden border border-black/[0.03] bg-white`}
-                >
-                  <Gallery product={product} isOutOfStock={isOutOfStock} />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
 
-                  {/* PEACH ON BLACK STATUS TAG */}
+              {/* ── LEFT SIDE: EDITORIAL GALLERY ── */}
+              <div className="lg:col-span-7 flex flex-col gap-6">
+                <div className={`relative aspect-[4/5] w-full bg-neutral-100 ${isOutOfStock ? 'opacity-60 grayscale' : ''}`}>
+
+                  <Gallery
+                    product={product}
+                    isOutOfStock={isOutOfStock}
+                  />
+
+                  {/* Elegant Out of Stock Overlay */}
                   {isOutOfStock && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm z-20">
-                      <div className="bg-black px-8 py-3">
-                        <span className="text-[11px] font-mono uppercase tracking-[0.6em] text-[#f97316]">
-                          Offline_Archive
-                        </span>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/20 backdrop-blur-sm z-50">
+                      <div className="bg-white/90 text-neutral-900 px-8 py-4 shadow-sm">
+                        <span className="text-[10px] font-sans tracking-[0.3em] uppercase">Archived</span>
                       </div>
                     </div>
                   )}
                 </div>
-                <Thumbnail product={product} />
+
+                {/* THUMBNAIL TRACKER */}
+                <div className="border-t border-black/[0.04] pt-6">
+                  <Thumbnail product={product} />
+                </div>
               </div>
 
-              {/* --- RIGHT: TECHNICAL SPECIFICATIONS --- */}
-              <div className="lg:col-span-5 space-y-12">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <span className="bg-black text-[#f97316] px-2 py-0.5 text-[9px] font-mono uppercase tracking-widest">
-                      Spec_Sheet_v3
-                    </span>
-                    <div className="h-px flex-1 bg-black/[0.05]" />
-                  </div>
+              {/* ── RIGHT SIDE: PRODUCT DETAILS ── */}
+              <div className="lg:col-span-5 flex flex-col justify-center">
 
-                  <h1 className="text-5xl md:text-7xl font-serif italic tracking-tighter text-black leading-none">
-                    {product.name}
-                  </h1>
-
-                  <div className="flex items-center gap-4 pt-2">
-                    <span className="text-2xl font-mono text-black">
-                      ${product.price?.toFixed(2)}
-                    </span>
-                    <span className="text-[10px] font-mono text-black/30 uppercase tracking-widest">
-                      USD_INTL
-                    </span>
-                  </div>
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-sans">
+                    {product.categories?.[0] ? "Core Collection" : "Essential Archive"}
+                  </span>
+                  <div className="w-4 h-px bg-neutral-300" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-sans">
+                    Ref—{product._id?.slice(-4).toUpperCase() || '0000'}
+                  </span>
                 </div>
 
-                <div className="text-neutral-600 prose prose-sm max-w-none font-serif italic leading-relaxed border-l-2 border-black/5 pl-6">
-                  {product.description}
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-tight text-neutral-900 leading-[1.1] mb-6">
+                  {product.name}
+                </h1>
+
+                <div className="text-lg md:text-xl font-sans text-neutral-500 tracking-widest mb-10">
+                  ${product.price?.toFixed(2)}
                 </div>
 
-                <div className="space-y-10 py-10 border-y border-black/[0.05]">
-                  {/* Color Swatch */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Zap size={14} className="text-[#f97316]" />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-black/40">
-                        Surface_Finish:
-                      </span>
+                <div className="mb-12">
+                  <p className="text-sm text-neutral-500 font-light leading-relaxed max-w-md">
+                    {product.description}
+                  </p>
+                </div>
+
+                <div className="space-y-8 border-t border-black/[0.04] pt-10">
+
+                  {/* Color Finish */}
+                  <div className='flex items-center justify-between'>
+                    <span className='text-[10px] font-sans text-neutral-400 uppercase tracking-[0.2em]'>Finish</span>
+                    <div>
+                      {productColor?.hex ? (
+                        <div className="flex items-center gap-4">
+                          <span className="text-xs font-sans text-neutral-900 tracking-wider capitalize">
+                            {productColor.name || productColor.hex}
+                          </span>
+                          <div
+                            className="w-5 h-5 rounded-full border border-black/10 shadow-sm"
+                            style={{ backgroundColor: productColor.hex }}
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-xs font-sans text-neutral-400">Unspecified</span>
+                      )}
                     </div>
-                    {product?.color?.hex && (
-                      <div className="flex items-center gap-3 bg-white border border-black/5 px-3 py-1.5 shadow-sm">
-                        <div
-                          className="w-3 h-3 rounded-full border border-black/10"
-                          style={{ backgroundColor: product.color.hex }}
-                        />
-                        <span className="text-[10px] font-mono text-black">
-                          {product.color.hex}
-                        </span>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Measurement/Size */}
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Expand size={14} className="text-black/20" />
-                        <span className="text-[10px] font-mono uppercase tracking-widest text-black/40">
-                          Dimensional_Spec:
-                        </span>
-                      </div>
+                  {/* Sizing Parameters */}
+                  <div className='space-y-4'>
+                    <div className='flex items-center justify-between'>
+                      <span className='text-[10px] font-sans text-neutral-400 uppercase tracking-[0.2em]'>Sizing</span>
                     </div>
                     <Size product={product} />
                   </div>
                 </div>
 
-                <div className="space-y-6">
+                {/* Purchase Action */}
+                <div className="pt-12">
                   <AddToCartButton product={product} disabled={isOutOfStock} />
-
-                  <div className="flex items-center gap-4 justify-center py-4 border border-black/[0.03] bg-white/50">
-                    <ShieldCheck size={14} className="text-black/20" />
-                    <span className="text-[9px] font-mono text-black/30 uppercase tracking-[0.3em]">
-                      Guaranteed_Authentic_Artifact
-                    </span>
-                  </div>
                 </div>
+
+                {/* Care Instructions */}
+                <div className="mt-12 pt-8 border-t border-black/[0.04]">
+                  <p className="text-[10px] text-neutral-400 uppercase tracking-[0.2em] mb-2">Garment Care</p>
+                  <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                    Dry clean only. Do not tumble dry. Store folded to maintain structural integrity.
+                  </p>
+                </div>
+
               </div>
             </div>
           </GalleryProvider>
         </RevealAnimation>
 
-        {/* --- RELATED MANIFEST --- */}
         <RevealAnimation>
-          <div className="mt-40 pt-20 border-t border-black/[0.05]">
-            <div className="mb-12">
-              <span className="text-[10px] font-mono text-black/20 uppercase tracking-[0.5em]">
-                Linked_Assets
-              </span>
-              <h2 className="text-4xl font-serif italic text-black">
-                Related Modules
-              </h2>
-            </div>
-            <div>
-              <RelatedProducts relatedProduct={relatedProduct} />
-            </div>
+          <div className="mt-40 pt-20 border-t border-black/[0.04]">
+            <RelatedProducts relatedProduct={relatedProduct} />
           </div>
         </RevealAnimation>
       </Container>

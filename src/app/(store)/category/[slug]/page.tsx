@@ -8,56 +8,69 @@ const Category = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const { slug } = await params;
     const products = await getProductByCategory(slug);
 
+    // Format slug for elegant display (e.g., "heavy-hoodies" -> "Heavy Hoodies")
+    const formattedTitle = slug.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+
     return (
-        <div className="bg-white min-h-screen"> 
-            {/* 65dvh Black Hero Section */}
-            <CategoryHero 
-                title={slug.replace('-', ' ')} 
-                subtitle="High-performance curation for the digital archive."
+        <div className="bg-neutral-50 min-h-screen text-neutral-900">
+
+            {/* Minimalist Hero Section */}
+            <CategoryHero
+                title={formattedTitle}
+                subtitle="Explore our curated selection of foundational garments and seasonal silhouettes."
             />
 
-            {/* Product Grid Section - Clean White Aesthetic */}
-            <div className="relative border-t border-black/[0.05]">
+            {/* Product Grid Section - High-End Editorial Aesthetic */}
+            <div className="relative border-t border-black/[0.04]">
                 <Container>
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-                        
-                        {/* Sidebar Telemetry (Desktop Only) */}
-                        <aside className="hidden lg:block lg:col-span-2 py-20 border-r border-black/[0.05] pr-8">
-                            <div className="sticky top-32 space-y-12">
+
+                        {/* ── Left Sidebar: Editorial Anchor (Desktop Only) ── */}
+                        <aside className="hidden lg:flex flex-col lg:col-span-3 py-24 border-r border-black/[0.04] pr-12">
+                            <div className="sticky top-40">
+
                                 <div className="space-y-4">
-                                    <h4 className="text-[10px] font-mono uppercase tracking-widest text-black/20">Filtering_</h4>
-                                    <div className="h-px w-full bg-black/[0.05]" />
-                                    <p className="text-[11px] font-mono text-black/40 leading-relaxed uppercase">
-                                        All assets are sorted by velocity and structural relevance.
+                                    <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 block">
+                                        Category Focus
+                                    </span>
+                                    <h4 className="text-2xl font-serif text-neutral-900 tracking-tight">
+                                        {formattedTitle}
+                                    </h4>
+                                    <div className="h-px w-full bg-black/[0.04] my-6" />
+                                    <p className="text-xs text-neutral-500 leading-relaxed font-light">
+                                        Meticulously crafted pieces designed for longevity. Each garment explores the balance between form, drape, and structural integrity.
                                     </p>
                                 </div>
-                                <div className="space-y-2">
-                                    <span className="text-[9px] font-mono text-orange-500/50 uppercase tracking-tighter">Live_Archive</span>
-                                    <div className="size-1.5 bg-orange-500 rounded-full animate-pulse" />
-                                </div>
+
                             </div>
                         </aside>
 
-                        {/* Main Grid Area */}
-                        <main className="lg:col-span-10 py-20 lg:pl-12">
+                        {/* ── Right Main Area: The Product Grid ── */}
+                        <main className="lg:col-span-9 py-20 lg:py-24 lg:pl-16">
+
                             {/* Grid Header */}
-                            <div className="flex flex-col md:flex-row justify-between items-baseline mb-16 gap-4">
-                                <div className="space-y-1">
-                                    <h3 className="text-4xl font-serif italic text-black tracking-tight">Available Units</h3>
-                                    <p className="text-[10px] font-mono text-black/30 uppercase tracking-[0.4em]">Index_Selection // {products.length} Results</p>
+                            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4 border-b border-black/[0.04] pb-8">
+                                <div className="space-y-2">
+                                    <h3 className="text-4xl md:text-5xl font-serif tracking-tight text-neutral-900">
+                                        The <span className="italic text-neutral-400">Collection.</span>
+                                    </h3>
                                 </div>
-                                <div className="h-px flex-1 bg-black/[0.03] mx-8 hidden md:block" />
-                                <div className="text-[10px] font-mono text-black/20 uppercase tracking-widest">
-                                    Sorted_By: [Chronology]
+
+                                <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 flex items-center gap-4">
+                                    <span>Viewing</span>
+                                    <span className="text-neutral-900 border-b border-neutral-900 pb-0.5">
+                                        {String(products.length).padStart(2, '0')} Pieces
+                                    </span>
                                 </div>
                             </div>
 
                             {/* The Grid Component */}
                             <div className="product-grid-wrapper">
-                                <ProductGrid products={products} slug={slug}/>
+                                <ProductGrid products={products} slug={slug} />
                             </div>
+
                         </main>
-                        
+
                     </div>
                 </Container>
             </div>

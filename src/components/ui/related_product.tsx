@@ -11,85 +11,83 @@ type RelatedproductProps = {
 
 const RelatedProducts = ({ relatedProduct }: RelatedproductProps) => {
   return (
-    <div className="my-32 border-t border-black/[0.03] pt-16">
-      <div className="flex items-center justify-between mb-16">
-        <div className="space-y-1">
-          <span className="text-[10px] font-mono text-[#f97316] uppercase tracking-[0.5em] animate-pulse">
-            Scanning_Subsystems...
-          </span>
-          <h2 className="text-4xl font-serif italic text-black tracking-tighter">
-            Linked Modules
+    <div className="my-32 border-t border-black/[0.04] pt-20">
+      {/* --- SECTION HEADER: Tightened spacing --- */}
+      <div className="flex flex-col md:flex-row items-baseline justify-between mb-16 gap-4">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <span className="text-[9px] text-neutral-400 uppercase tracking-[0.3em] font-medium">
+              Curation
+            </span>
+            <div className="w-8 h-px bg-neutral-200" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-serif tracking-tight text-neutral-900 leading-none">
+            Complementary <span className="italic text-neutral-400">Silhouettes.</span>
           </h2>
         </div>
+        <p className="text-[9px] uppercase tracking-[0.3em] text-neutral-300 font-medium">
+          REF—0{new Date().getMonth() + 1} // Lookbook_Extract
+        </p>
       </div>
 
       {relatedProduct?.related && relatedProduct.related.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-20">
+        /* --- GRID: Increased to 5 columns on large screens for smaller cards --- */
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-16">
           {relatedProduct.related.map((item, i) => (
-            <div key={i}>
+            <div key={i} className="group">
               <Link
                 href={`/product/${item.slug?.current}`}
-                className="group block relative"
+                className="block relative"
               >
-                {/* IMAGE CONTAINER */}
-                <div className="relative aspect-[3/4] w-full mb-8 overflow-hidden">
-                  {/* 1. THE CROSSHAIR (Hidden until hover) */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                    <div className="absolute w-full h-[1px] bg-[#f97316]/10" />
-                    <div className="absolute h-full w-[1px] bg-[#f97316]/10" />
-                    <div className="size-24 border border-[#f97316]/20 rounded-full animate-[ping_3s_linear_infinite]" />
-                  </div>
+                {/* ── IMAGE VIEWPORT: Reduced margin ── */}
+                <div className="relative aspect-[3/4] w-full mb-5 overflow-hidden bg-[#F9F9F9] border border-black/[0.03] transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:shadow-lg group-hover:-translate-y-1">
 
-                  {/* 2. THE SCAN LINE (Glitch effect on hover) */}
-                  <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 pointer-events-none overflow-hidden">
-                    <div className="w-full h-[2px] bg-[#f97316]/40 absolute top-0 animate-[scan_1.5s_ease-in-out_infinite]" />
-                  </div>
+                  {/* Soft Editorial Overlay */}
+                  <div className="absolute inset-0 bg-neutral-900/0 group-hover:bg-neutral-900/[0.01] transition-colors duration-700 z-10" />
 
-                  {/* 3. THE IMAGE */}
                   <Image
                     src={
                       item.image?.asset
                         ? imageUrl(item.image).url()
-                        : "/assets/img1.jpg"
+                        : "/placeholder.jpg"
                     }
-                    alt={item.name || "module"}
+                    alt={item.name || "garment"}
                     fill
-                    className="object-contain transition-transform duration-[2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:brightness-110"
+                    className="object-cover transition-transform duration-[2.5s] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-105"
                   />
 
-                  {/* 4. THE PRICE TAG */}
-                  <div className="absolute top-0 right-0 z-20 overflow-hidden">
-                    <div className="bg-black text-[#f97316] px-3 py-1 text-[10px] font-mono font-bold translate-y-0 group-hover:-translate-y-full transition-transform duration-300">
-                      ${item.price}
-                    </div>
-                    <div className="absolute inset-0 bg-[#f97316] text-black px-3 py-1 text-[10px] font-mono font-bold translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      ACQUIRE
-                    </div>
+                  {/* Minimalist Floating Index */}
+                  <div className="absolute top-3 left-3 z-20">
+                    <span className="text-[8px] font-mono text-neutral-400/60 uppercase">
+                      [{String(i + 1).padStart(2, '0')}]
+                    </span>
                   </div>
                 </div>
 
-                {/* MODULE DATA */}
-                <div className="space-y-3 px-1">
-                  <div className="flex items-center gap-2 overflow-hidden">
-                    <span className="text-[9px] font-mono text-[#f97316] group-hover:animate-bounce">
-                      0{i + 1}
+                {/* ── PRODUCT INFO: Scaled down for a professional 'label' feel ── */}
+                <div className="space-y-3 px-0.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[8px] font-medium text-neutral-400 uppercase tracking-widest">
+                      Studio_Inventory
                     </span>
-                    <div className="h-[1px] flex-1 bg-black/10 origin-left scale-x-100 group-hover:scale-x-50 group-hover:bg-[#f97316] transition-all duration-500" />
-                    <span className="text-[7px] font-mono text-[#f97316] opacity-0 group-hover:opacity-100 transition-opacity">
-                      LOCKED
+                    <span className="text-[10px] font-medium text-neutral-900 tabular-nums">
+                      ${item.price}
                     </span>
                   </div>
 
-                  <h3 className="font-serif italic text-xl text-black group-hover:pl-2 transition-all duration-500">
-                    {item.name}
-                  </h3>
+                  <div className="relative overflow-hidden">
+                    <h3 className="font-serif text-lg text-neutral-900 tracking-tight leading-tight transition-transform duration-500 group-hover:italic">
+                      {item.name}
+                    </h3>
+                    <div className="absolute bottom-0 left-0 h-px w-0 group-hover:w-full bg-neutral-900/10 transition-all duration-700" />
+                  </div>
 
-                  <div className="flex justify-between items-center">
-                    <p className="text-[8px] font-mono text-black/30 uppercase tracking-[0.2em]">
-                      Unit_
-                      {Math.random().toString(36).substring(9).toUpperCase()}
+                  {/* Minimalist Reveal Info */}
+                  <div className="flex justify-between items-center opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+                    <p className="text-[7px] font-medium text-neutral-300 uppercase tracking-[0.2em]">
+                      View Details
                     </p>
-                    <div className="size-1 bg-black/10 group-hover:bg-[#f97316] transition-colors" />
+                    <div className="w-4 h-px bg-neutral-200" />
                   </div>
                 </div>
               </Link>
@@ -97,23 +95,12 @@ const RelatedProducts = ({ relatedProduct }: RelatedproductProps) => {
           ))}
         </div>
       ) : (
-        <div className="py-24 border-y border-dashed border-black/10 flex items-center justify-center">
-          <p className="text-[10px] font-mono text-black/30 uppercase tracking-[0.6em]">
-            No_Linked_Modules
+        <div className="py-24 border-y border-black/[0.02] flex items-center justify-center">
+          <p className="text-[9px] font-medium text-neutral-200 uppercase tracking-[0.8em]">
+            Archival Search Empty
           </p>
         </div>
       )}
-
-      <style jsx global>{`
-        @keyframes scan {
-          0% {
-            top: -10%;
-          }
-          100% {
-            top: 110%;
-          }
-        }
-      `}</style>
     </div>
   );
 };

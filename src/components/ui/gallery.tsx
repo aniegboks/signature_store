@@ -6,51 +6,53 @@ import { imageUrl } from '@/lib/imageUrl';
 import { useGallery } from '../gallery_context';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PRODUCT_BY_QUERY_IDResult } from '../../../sanity.types';
-import { Maximize2, X, ChevronLeft, ChevronRight, ScanLine } from 'lucide-react';
+import { Maximize2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface GalleryProps {
   product: PRODUCT_BY_QUERY_IDResult;
   isOutOfStock: boolean;
 }
 
-// --- FRAMER MOTION VARIANTS ---
-const shutterVariants = {
-  hidden: { clipPath: 'inset(50% 0 50% 0)', opacity: 0 },
-  visible: { 
-    clipPath: 'inset(0% 0 0% 0)', 
+// --- REFINED EDITORIAL VARIANTS ---
+const elegantEasing: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: {
     opacity: 1,
-    transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] as const, staggerChildren: 0.1, delayChildren: 0.3 } 
+    transition: { duration: 0.8, ease: elegantEasing }
   },
-  exit: { 
-    clipPath: 'inset(50% 0 50% 0)', 
+  exit: {
     opacity: 0,
-    transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const } 
+    transition: { duration: 0.6, ease: elegantEasing }
   }
 };
 
-const uiVariants = {
-  hidden: { opacity: 0, y: 15, filter: 'blur(4px)' },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    filter: 'blur(0px)',
-    transition: { duration: 0.6, ease: "easeOut" as const } 
+const imageRevealVariants = {
+  hidden: { opacity: 0, scale: 1.05 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 1.4, ease: elegantEasing }
   }
 };
 
-const imageVariants = {
-  hidden: { scale: 1.1, opacity: 0 },
-  visible: { scale: 1, opacity: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const } }
+const uiFadeVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, delay: 0.2, ease: "easeOut" as const }
+  }
 };
 
 const Gallery = ({ product, isOutOfStock }: GalleryProps) => {
   const { mainImageIndex, setMainImageIndex } = useGallery();
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isImmersive, setIsImmersive] = useState(false);
   const images = product?.images || [];
   const image = images[mainImageIndex];
   const galleryRef = useRef<HTMLDivElement>(null);
 
-  // --- NAVIGATION LOGIC (Fixes the TS Error) ---
   const nextImage = useCallback(() => {
     const nextIdx = (mainImageIndex + 1) % images.length;
     setMainImageIndex(nextIdx);
@@ -61,21 +63,20 @@ const Gallery = ({ product, isOutOfStock }: GalleryProps) => {
     setMainImageIndex(prevIdx);
   }, [mainImageIndex, images.length, setMainImageIndex]);
 
-  const toggleDiagnosticMode = useCallback(() => {
+  const toggleImmersive = useCallback(() => {
     if (isOutOfStock) return;
-    setIsFullscreen(!isFullscreen);
-  }, [isFullscreen, isOutOfStock]);
+    setIsImmersive(!isImmersive);
+  }, [isImmersive, isOutOfStock]);
 
-  // --- KEYBOARD & SCROLL LOCK ---
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isFullscreen) return;
+      if (!isImmersive) return;
       if (e.key === 'ArrowRight') nextImage();
       if (e.key === 'ArrowLeft') prevImage();
-      if (e.key === 'Escape') setIsFullscreen(false);
+      if (e.key === 'Escape') setIsImmersive(false);
     };
 
-    if (isFullscreen) {
+    if (isImmersive) {
       document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
     } else {
@@ -86,146 +87,143 @@ const Gallery = ({ product, isOutOfStock }: GalleryProps) => {
       document.body.style.overflow = 'auto';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isFullscreen, mainImageIndex, nextImage, prevImage]);
+  }, [isImmersive, mainImageIndex, nextImage, prevImage]);
 
   return (
-    <div className="w-full h-full font-mono">
-      {/* --- MAIN DISPLAY --- */}
-      <div 
+    <div className="w-full h-full font-sans">
+      {/* --- PRIMARY VIEWPORT --- */}
+      <div
         ref={galleryRef}
-        className="relative aspect-square w-full bg-[#F5F5F5] overflow-hidden group"
+        className="relative aspect-[4/5] w-full bg-neutral-50 overflow-hidden group border border-black/[0.03]"
       >
         <AnimatePresence mode="wait">
           {image && (
             <motion.div
               key={mainImageIndex}
-              className="absolute inset-0 p-12"
-              initial={{ opacity: 0, scale: 0.98, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, scale: 1.02, filter: 'blur(4px)' }}
-              transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+              className="absolute inset-0 p-8 md:p-12"
+              initial={{ opacity: 0, filter: 'blur(8px)' }}
+              animate={{ opacity: 1, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, filter: 'blur(8px)' }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               <Image
                 src={imageUrl(image).url()}
-                alt={product?.name || 'Component Image'}
+                alt={product?.name || 'Garment Perspective'}
                 fill
-                className="object-contain"
+                className="object-contain mix-blend-multiply"
                 priority
               />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* --- HUD --- */}
-        <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-start pointer-events-none z-10">
+        {/* --- INTERFACE OVERLAYS --- */}
+        <div className="absolute top-0 left-0 w-full p-6 md:p-8 flex justify-between items-start z-10">
           <div className="flex flex-col gap-1">
-             <span className="text-[9px] text-black/30 tracking-[0.3em] uppercase">Status // Verified</span>
-             <div className="flex items-center gap-2">
-                <div className="size-1 bg-[#f97316] rounded-full animate-pulse" />
-                <span className="text-[10px] text-black font-bold tracking-widest uppercase">Node_0{mainImageIndex + 1}</span>
-             </div>
+            <span className="text-[10px] text-neutral-400 uppercase tracking-[0.2em] font-sans">Perspective</span>
+            <span className="text-xs text-neutral-900 font-serif italic tracking-tight">
+              0{mainImageIndex + 1} &mdash; 0{images.length}
+            </span>
           </div>
 
-          <button 
-            onClick={toggleDiagnosticMode}
-            className="pointer-events-auto size-14 bg-black flex items-center justify-center hover:bg-[#f97316] transition-colors group/btn shadow-xl"
+          <button
+            onClick={toggleImmersive}
+            className="pointer-events-auto size-12 bg-white/80 backdrop-blur-md border border-black/[0.04] flex items-center justify-center hover:bg-neutral-900 hover:text-white transition-all duration-500 shadow-sm"
           >
-            <Maximize2 size={16} className="text-white group-hover/btn:text-black transition-colors" />
+            <Maximize2 size={16} strokeWidth={1.5} />
           </button>
         </div>
 
         {isOutOfStock && (
-          <div className="absolute inset-0 z-30 bg-[#F5F5F5]/80 backdrop-blur-md flex items-center justify-center border border-red-500/20">
-             <div className="bg-black text-red-500 px-8 py-3 text-[11px] font-bold tracking-[0.6em] uppercase flex items-center gap-3">
-                <div className="size-2 bg-red-500 rounded-full animate-ping" />
-                System_Lock
-             </div>
+          <div className="absolute inset-0 z-30 bg-white/40 backdrop-blur-sm flex items-center justify-center">
+            <div className="bg-white px-10 py-4 border border-black/[0.04] shadow-xl">
+              <span className="text-[10px] text-neutral-900 font-sans tracking-[0.4em] uppercase">Archived Selection</span>
+            </div>
           </div>
         )}
       </div>
 
-      {/* --- FULLSCREEN DIAGNOSTIC OVERLAY --- */}
+      {/* --- IMMERSIVE EXHIBITION OVERLAY --- */}
       <AnimatePresence>
-        {isFullscreen && (
-          <motion.div 
-            variants={shutterVariants}
+        {isImmersive && (
+          <motion.div
+            variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             className="fixed inset-0 z-[100] bg-white flex flex-col"
           >
-            {/* Top Bar */}
-            <motion.div variants={uiVariants} className="h-20 border-b border-black/5 flex items-center justify-between px-8 bg-white z-20">
-               <div className="flex items-center gap-6">
-                  <div className="bg-[#f97316] text-black px-4 py-1.5 text-[10px] font-bold tracking-[0.2em] uppercase flex items-center gap-2 shadow-lg">
-                    <ScanLine size={12} />
-                    High_Fidelity_Scan
-                  </div>
-                  <span className="text-xs text-black/30 uppercase tracking-[0.2em] hidden md:block">
-                    Target // {product?.name || "Unidentified"}
-                  </span>
-               </div>
-               <button 
-                onClick={toggleDiagnosticMode}
-                className="size-14 bg-black flex items-center justify-center text-[#f97316] hover:bg-[#f97316] hover:text-black transition-all"
-               >
-                 <X size={20} />
-               </button>
+            {/* Minimal Header */}
+            <motion.div variants={uiFadeVariants} className="h-24 flex items-center justify-between px-8 md:px-12 bg-white">
+              <div className="flex items-center gap-6">
+                <span className="text-[10px] text-neutral-400 uppercase tracking-[0.3em] font-sans">
+                  Detailed Examination
+                </span>
+                <div className="w-8 h-px bg-neutral-200 hidden md:block" />
+                <h2 className="text-sm font-serif italic text-neutral-900 hidden md:block">
+                  {product?.name}
+                </h2>
+              </div>
+              <button
+                onClick={toggleImmersive}
+                className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-neutral-400 hover:text-neutral-900 transition-colors"
+              >
+                Close <X size={18} strokeWidth={1.2} />
+              </button>
             </motion.div>
 
-            {/* Main View */}
-            <div className="flex-1 relative flex items-center justify-center bg-[#F9F9F9] overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-                     style={{ backgroundImage: `radial-gradient(circle at 2px 2px, black 1px, transparent 0)`, backgroundSize: '48px 48px' }} />
-                
-                <AnimatePresence mode="wait">
-                    <motion.div 
-                        key={mainImageIndex}
-                        variants={imageVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.4 } }}
-                        className="relative w-full h-full max-w-6xl p-12 md:p-24"
-                    >
-                        <Image
-                            src={imageUrl(image!).url()}
-                            alt="High Res Inspection"
-                            fill
-                            className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)]"
-                        />
-                    </motion.div>
-                </AnimatePresence>
+            {/* Exhibition Space */}
+            <div className="flex-1 relative flex items-center justify-center bg-[#FAFAFA] overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={mainImageIndex}
+                  variants={imageRevealVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0, transition: { duration: 0.4 } }}
+                  className="relative w-full h-full max-w-5xl p-12 md:p-24"
+                >
+                  <Image
+                    src={imageUrl(image!).url()}
+                    alt="Collection Perspective"
+                    fill
+                    className="object-contain mix-blend-multiply drop-shadow-2xl"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
-                {/* Left Telemetry */}
-                <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-16 z-20">
-                   {[1, 2, 3].map((i) => (
-                     <motion.div key={i} variants={uiVariants} className="space-y-2">
-                        <div className="h-[2px] w-12 bg-[#f97316]" />
-                        <span className="block text-[9px] text-black/40 uppercase tracking-widest">Telemetry_0{i}</span>
-                        <p className="text-sm text-black font-bold font-mono">VAL_{(i * 44 + mainImageIndex * 12).toString().padStart(4, '0')}</p>
-                     </motion.div>
-                   ))}
-                </div>
+              {/* Subtle Context Labels */}
+              <div className="absolute left-12 bottom-12 hidden lg:flex flex-col gap-8 z-20">
+                <motion.div variants={uiFadeVariants} className="space-y-1">
+                  <span className="block text-[9px] text-neutral-400 uppercase tracking-[0.2em]">Material</span>
+                  <p className="text-xs text-neutral-900 font-sans tracking-wide">Premium Weighted Fabric</p>
+                </motion.div>
+                <motion.div variants={uiFadeVariants} className="space-y-1">
+                  <span className="block text-[9px] text-neutral-400 uppercase tracking-[0.2em]">Silhouette</span>
+                  <p className="text-xs text-neutral-900 font-sans tracking-wide">Structural Drape</p>
+                </motion.div>
+              </div>
             </div>
 
-            {/* Bottom Nav */}
-            <motion.div variants={uiVariants} className="h-28 border-t border-black/5 flex items-center justify-center gap-8 md:gap-24 bg-white z-20">
-                <button onClick={prevImage} className="text-[10px] font-bold tracking-[0.3em] uppercase text-black/30 hover:text-[#f97316] transition-colors flex items-center gap-2 group/nav">
-                   <ChevronLeft size={16} className="group-hover/nav:-translate-x-1 transition-transform" /> Prev_Node
-                </button>
-                
-                <div className="flex flex-col items-center gap-2">
-                    <div className="flex gap-2">
-                        {images.map((_, idx) => (
-                            <div key={idx} className={`h-1.5 transition-all duration-500 ${idx === mainImageIndex ? 'w-8 bg-[#f97316]' : 'w-2 bg-black/10'}`} />
-                        ))}
-                    </div>
-                    <span className="text-[8px] tracking-[0.4em] text-black/20 uppercase">Buffer_Status</span>
-                </div>
+            {/* Refined Navigation */}
+            <motion.div variants={uiFadeVariants} className="h-32 border-t border-black/[0.04] flex items-center justify-between px-8 md:px-24 bg-white">
+              <button onClick={prevImage} className="group flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-neutral-400 hover:text-neutral-900 transition-all duration-500">
+                <ChevronLeft size={20} strokeWidth={1} className="group-hover:-translate-x-2 transition-transform" />
+                <span>Previous</span>
+              </button>
 
-                <button onClick={nextImage} className="text-[10px] font-bold tracking-[0.3em] uppercase text-black/30 hover:text-[#f97316] transition-colors flex items-center gap-2 group/nav">
-                   Next_Node <ChevronRight size={16} className="group-hover/nav:translate-x-1 transition-transform" />
-                </button>
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex gap-3">
+                  {images.map((_, idx) => (
+                    <div key={idx} className={`h-[1px] transition-all duration-700 ease-[0.16, 1, 0.3, 1] ${idx === mainImageIndex ? 'w-10 bg-neutral-900' : 'w-4 bg-neutral-200'}`} />
+                  ))}
+                </div>
+              </div>
+
+              <button onClick={nextImage} className="group flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-neutral-400 hover:text-neutral-900 transition-all duration-500">
+                <span>Next</span>
+                <ChevronRight size={20} strokeWidth={1} className="group-hover:translate-x-2 transition-transform" />
+              </button>
             </motion.div>
           </motion.div>
         )}

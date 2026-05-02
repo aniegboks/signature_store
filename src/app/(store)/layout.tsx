@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Infant, Urbanist, JetBrains_Mono } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs"; // <--- THE FIX
+import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/header";
 import "../../app/globals.css";
 import { SanityLive } from "@/sanity/lib/live";
@@ -21,14 +21,15 @@ const urbanist = Urbanist({
   display: "swap",
 });
 
+// Keeping the mono font available globally, but removing it from the primary UI elements
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
-  title: "Signature Series",
-  description: "High-performance curation and digital archives.",
+  title: "Signature.",
+  description: "A curated editorial archive of structural garments and timeless silhouettes.",
 };
 
 export default async function RootLayout({
@@ -37,58 +38,64 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider 
+    <ClerkProvider
       dynamic
       appearance={{
         layout: {
           socialButtonsVariant: "blockButton",
-          shimmer: true,
+          // Turning off shimmer for a more grounded, physical editorial feel
+          shimmer: false,
         },
         variables: {
-          colorPrimary: "#f97316", 
-          colorBackground: "#050505", 
-          colorText: "#ffffff",
-          colorTextSecondary: "rgba(255,255,255,0.4)",
-          colorInputBackground: "rgba(255,255,255,0.03)",
-          colorInputText: "#ffffff",
-          borderRadius: "0px", 
+          colorPrimary: "#171717", // Crisp Neutral Black
+          colorBackground: "#ffffff",
+          colorText: "#171717",
+          colorTextSecondary: "#737373", // Neutral-500 for subtle copy
+          colorInputBackground: "#ffffff",
+          colorInputText: "#171717",
+          borderRadius: "0px", // Strict, architectural corners
           fontFamily: "var(--font-urbanist)",
         },
         elements: {
-          // HUD Card Styling
-          card: "border border-white/10 bg-[#050505] shadow-[0_0_60px_rgba(249,115,22,0.05)] relative overflow-visible " +
-                "before:content-[''] before:absolute before:-top-2 before:-left-2 before:w-6 before:h-6 before:border-t before:border-l before:border-orange-500/50 " +
-                "after:content-[''] after:absolute after:-bottom-2 after:-right-2 after:w-6 after:h-6 before:border-b before:border-r before:border-orange-500/50",
-          
-          headerTitle: "font-cormorant italic tracking-tighter text-4xl",
-          headerSubtitle: "font-mono text-[9px] uppercase tracking-[0.4em] text-orange-500/60 mt-2",
-          
-          formFieldLabel: "font-mono text-[8px] uppercase tracking-[0.3em] text-white/30",
-          formFieldInput: "border-white/10 focus:border-orange-500 focus:ring-0 transition-all font-mono",
-          
-          formButtonPrimary: "bg-white text-black hover:bg-orange-500 hover:text-white transition-all duration-500 font-mono uppercase tracking-[0.3em] text-[10px] h-14",
-          
-          socialButtonsBlockButton: "bg-white/5 border-white/10 hover:bg-white/10 transition-all rounded-none",
-          socialButtonsBlockButtonText: "font-mono text-[10px] uppercase tracking-widest text-white/70",
-          
-          footerActionLink: "text-orange-500 hover:text-white transition-colors font-bold",
-          dividerLine: "bg-white/5",
-          dividerText: "font-mono text-[8px] uppercase tracking-[0.5em] text-white/10"
+          // Clean, shadow-lifted white card
+          card: "border border-black/[0.04] bg-white shadow-2xl rounded-none p-4 md:p-8",
+
+          // Editorial typography for the Auth headers
+          headerTitle: "font-cormorant italic tracking-tight text-4xl md:text-5xl text-neutral-900",
+          headerSubtitle: "font-sans text-xs font-light text-neutral-500 mt-2",
+
+          // Widely tracked, minimalist labels
+          formFieldLabel: "font-sans text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2",
+          formFieldInput: "border-black/[0.08] focus:border-black focus:ring-0 transition-colors rounded-none px-4 py-3 text-sm font-light",
+
+          // Heavy, stark submit button
+          formButtonPrimary: "bg-neutral-900 text-white hover:bg-neutral-700 transition-colors duration-500 font-sans uppercase tracking-[0.2em] text-[10px] h-12 rounded-none",
+
+          // Refined social login buttons
+          socialButtonsBlockButton: "border border-black/[0.08] bg-transparent hover:bg-neutral-50 transition-colors duration-300 rounded-none h-12",
+          socialButtonsBlockButtonText: "font-sans text-[10px] uppercase tracking-[0.15em] text-neutral-600",
+
+          // Clean footer links
+          footerActionLink: "text-neutral-900 hover:text-neutral-500 transition-colors border-b border-neutral-900 pb-0.5",
+          dividerLine: "bg-black/[0.04]",
+          dividerText: "font-sans text-[10px] uppercase tracking-[0.2em] text-neutral-300"
         }
       }}
     >
       <html lang="en">
         <ReactLenis root>
-          <body className={`${urbanist.variable} ${cormorant_infant.variable} ${jetbrainsMono.variable} antialiased bg-[#050505] text-white`}>
+          {/* Changed base theme to the high-end #FAFAFA light background */}
+          <body className={`${urbanist.variable} ${cormorant_infant.variable} ${jetbrainsMono.variable} antialiased bg-[#FAFAFA] text-neutral-900`}>
+
             <Header />
+
             <main className="min-h-screen relative">
-              {/* Optional Background Scanline Effect */}
-              <div className="fixed inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-50 bg-[length:100%_2px,3px_100%]" />
-              
               {children}
             </main>
+
             <Footer />
             <SanityLive />
+
           </body>
         </ReactLenis>
       </html>

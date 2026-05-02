@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import Button from '@/components/ui/button';
-import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/store';
 import { motion } from 'framer-motion';
+import { ArrowRight, Check } from 'lucide-react';
+import Container from '@/components/ui/container';
 
 const SuccessPage = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const orderNumber = searchParams.get('orderNumber');
   const clearCart = useCartStore((state) => state.clearCart);
 
@@ -17,97 +18,82 @@ const SuccessPage = () => {
   }, [clearCart]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#F5F5F5] px-4 overflow-hidden relative">
-      {/* BACKGROUND TELEMETRY GRID */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-           style={{ backgroundImage: 'radial-gradient(#000000 1px, transparent 0)', backgroundSize: '30px 30px' }} />
+    <div className="min-h-screen bg-[#F9F8F6] text-[#1A1A1A] flex flex-col justify-center py-32 relative overflow-hidden selection:bg-black selection:text-white">
 
-      {/* JET TURBINE / THRUST VISUALIZATION */}
-      <div className="relative flex items-center justify-center w-full max-w-md h-64 mb-12">
-        {/* Turbine Rings */}
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: [0, 0.2, 0], scale: [0.8, 1.5, 2] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              delay: i * 0.6,
-              ease: "easeOut"
-            }}
-            className="absolute border border-[#f97316] rounded-full"
-            style={{ width: '120px', height: '120px' }}
-          />
-        ))}
-
-        {/* Central Engine Core */}
-        <motion.div 
-          initial={{ rotate: 0 }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
-          className="relative z-10 size-32 border-4 border-black rounded-full flex items-center justify-center bg-white shadow-2xl"
-        >
-          <div className="size-24 border border-black/10 rounded-full border-dashed animate-spin-slow" />
-          <div className="absolute size-4 bg-[#f97316] rounded-full shadow-[0_0_20px_#f97316]" />
-        </motion.div>
-
-        {/* Heat Trails (Exhaust) */}
-        <motion.div 
-          animate={{ height: [80, 120, 80], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 0.2, repeat: Infinity }}
-          className="absolute top-[60%] w-[2px] bg-gradient-to-b from-[#f97316] to-transparent z-0"
-        />
+      {/* --- AMBIENT WATERMARK --- */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none">
+        <h2 className="text-[25vw] font-serif italic select-none">Confirmed</h2>
       </div>
 
-      {/* TEXT DATA */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="relative z-20 text-center"
-      >
-        <div className="inline-block bg-black text-white px-3 py-1 text-[10px] font-mono tracking-[0.3em] uppercase mb-6">
-          System_Ignition_Success
-        </div>
-        
-        <h1 className="text-5xl md:text-6xl font-serif italic uppercase tracking-tighter text-black mb-4">
-          Order Launched
-        </h1>
+      <Container>
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
 
-        <div className="max-w-xs mx-auto space-y-4">
-          <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest leading-relaxed">
-            Payment verified. Propulsion engaged. Your items are currently in transition to your coordinates.
-          </p>
 
+          {/* --- MAIN EDITORIAL --- */}
+          <div className="space-y-8 mb-16">
+            <span className="text-[10px] font-medium uppercase tracking-[0.4em] text-neutral-400 block">
+              Selection Finalized
+            </span>
+            <h1 className="text-7xl md:text-9xl font-serif italic leading-none tracking-tighter">
+              Acquired<span className="text-neutral-200 not-italic">.</span>
+            </h1>
+            <p className="text-sm md:text-base text-neutral-500 max-w-sm mx-auto leading-relaxed">
+              Your items have been documented and are currently being prepared for transition to your archive.
+            </p>
+          </div>
+
+          {/* --- REFERENCE BLOCK --- */}
           {orderNumber && (
-            <div className="bg-white border border-black/5 p-4 rounded-sm shadow-sm mt-8">
-              <span className="block text-[8px] font-mono text-black/30 uppercase tracking-[0.2em] mb-1">Tracking_Ref</span>
-              <span className="font-mono text-sm font-bold text-[#f97316] uppercase select-all">{orderNumber}</span>
+            <div className="bg-white border border-black/[0.04] px-8 py-5 mb-16 inline-block">
+              <span className="block text-[8px] font-medium text-neutral-300 uppercase tracking-[0.4em] mb-1">
+                Ref. ID
+              </span>
+              <span className="text-[11px] font-medium tracking-[0.1em] text-[#1A1A1A] uppercase">
+                {orderNumber}
+              </span>
             </div>
           )}
-        </div>
 
-        {/* NAV NODES */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-12 justify-center">
-          <Link href="/">
-            <Button className="min-w-[160px] py-6 font-mono text-xs uppercase tracking-widest" variant="secondary">
-              Catalog_Return
-            </Button>
-          </Link>
-          <Link href="/orders">
-            <Button className="min-w-[160px] py-6 font-mono text-xs uppercase tracking-widest bg-black text-white hover:bg-[#f97316] hover:text-black transition-colors">
-              Monitor_Orders
-            </Button>
-          </Link>
-        </div>
-      </motion.div>
+          {/* --- CONTAINED ACTIONS --- */}
+          <div className="flex flex-col sm:flex-row gap-6 w-full max-w-lg">
+            {/* Primary Action */}
+            <button
+              onClick={() => router.push('/orders')}
+              className="group relative flex-1 h-20 bg-[#1A1A1A] text-white flex items-center justify-center overflow-hidden transition-all duration-700"
+            >
+              <div className="relative z-10 flex items-center gap-4 px-6">
+                <span className="text-[10px] font-medium uppercase tracking-[0.3em] whitespace-nowrap pt-0.5">
+                  View Collection
+                </span>
+                <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-500 ease-out flex-shrink-0" />
+              </div>
 
-      {/* FOOTER TELEMETRY */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-        <span className="text-[8px] font-mono text-black/20 uppercase tracking-[0.5em]">
-          Mach_1.2 // Nominal_Output
-        </span>
+              {/* Wipe Effect */}
+              <div className="absolute inset-0 bg-neutral-800 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.19,1,0.22,1]" />
+
+              {/* Internal Border Detail */}
+              <div className="absolute inset-1.5 border border-white/0 group-hover:border-white/5 transition-colors duration-700" />
+            </button>
+
+            {/* Secondary Action */}
+            <button
+              onClick={() => router.push('/')}
+              className="flex-1 h-20 border border-black/5 bg-white text-[#1A1A1A] flex items-center justify-center transition-all duration-500 hover:bg-neutral-50"
+            >
+              <span className="text-[10px] font-medium uppercase tracking-[0.3em] whitespace-nowrap pt-0.5">
+                Return to Studio
+              </span>
+            </button>
+          </div>
+
+        </div>
+      </Container>
+
+      {/* --- STUDIO MARK --- */}
+      <div className="absolute bottom-12 left-0 right-0 text-center">
+        <p className="text-[8px] font-medium text-neutral-300 uppercase tracking-[0.6em]">
+          Signature Studio — 2026 Distribution
+        </p>
       </div>
     </div>
   );

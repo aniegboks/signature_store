@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Banner } from '../../sanity.types';
 import { imageUrl } from '@/lib/imageUrl';
@@ -9,8 +10,7 @@ import { PageLoader } from './ui/svg_path_loader';
 const BannerSection = ({ banner }: { banner: Banner[] }) => {
   const [index, setIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  
-  // Refs for logic to avoid re-triggering useEffects
+
   const indexRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -18,70 +18,76 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
 
   const currentBanner = banner[0];
   const images = currentBanner?.images || [];
-  const TOTAL_DURATION = 6;
+  const TOTAL_DURATION = 7;
 
-  // STABLE ANIMATION FUNCTION
+  // STABLE, ELEGANT ANIMATION FUNCTION
   const goToSlide = (next: number) => {
     if (isAnimatingRef.current || !imageRef.current) return;
-    
+
     isAnimatingRef.current = true;
-    
+
     const tl = gsap.timeline({
       onComplete: () => {
         isAnimatingRef.current = false;
       }
     });
 
-    tl.to(imageRef.current, { 
-      clipPath: "inset(0% 50% 0% 50%)", 
-      filter: "brightness(3) saturate(0)",
-      duration: 0.5, 
-      ease: "power4.inOut",
+    tl.to(imageRef.current, {
+      clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+      opacity: 0.4,
+      duration: 0.6,
+      ease: "power2.inOut",
       force3D: true,
       onComplete: () => {
         setIndex(next);
         indexRef.current = next;
       }
     })
-    .to(imageRef.current, { 
-      clipPath: "inset(0% 0% 0% 0%)", 
-      filter: "brightness(1) saturate(1)",
-      duration: 0.8, 
-      ease: "expo.out",
-      force3D: true
-    });
+      .to(imageRef.current, {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        opacity: 1,
+        duration: 1,
+        ease: "power3.out",
+        force3D: true
+      });
   };
 
   useEffect(() => {
     if (!isLoaded || images.length === 0) return;
 
     const ctx = gsap.context(() => {
-      // 1. Entrance Animations
-      gsap.to(".hud-element", {
+      // Gentle Entrance Animations
+      gsap.to(".gallery-element", {
         opacity: 1,
         y: 0,
-        duration: 1,
-        stagger: 0.1,
-        ease: "power3.out",
+        x: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: "power2.out",
       });
 
-      // 2. Persistent Progress Gauge
-      const segments = gsap.utils.toArray<HTMLElement>('.progress-segment');
-      gsap.to(segments, {
-        backgroundColor: (i) => i > 12 ? "#f97316" : "#ffffff",
-        opacity: 1,
-        duration: 0.1,
-        stagger: TOTAL_DURATION / segments.length,
-        repeat: -1,
-        onRepeat: () => {
-          const next = (indexRef.current + 1) % images.length;
-          goToSlide(next);
-        },
-      });
+      // Elegant, continuous progress bar
+      const progressLine = document.querySelector('.progress-fill');
+      if (progressLine) {
+        gsap.fromTo(progressLine,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            duration: TOTAL_DURATION,
+            ease: "none",
+            repeat: -1,
+            transformOrigin: "top center",
+            onRepeat: () => {
+              const next = (indexRef.current + 1) % images.length;
+              goToSlide(next);
+            },
+          }
+        );
+      }
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isLoaded, images.length]); 
+  }, [isLoaded, images.length]);
 
   const manualNext = () => manualGoTo((index + 1) % images.length);
   const manualGoTo = (next: number) => goToSlide(next);
@@ -90,93 +96,76 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
     <>
       <PageLoader onFinished={() => setIsLoaded(true)} />
 
-      <div ref={containerRef} className="carousel-container relative w-full min-h-[100svh] py-32 bg-[#050505] flex flex-col items-center justify-center font-mono overflow-hidden">
-        
-        {/* TOP HUD: TELEMETRY */}
-        <div className="absolute top-0 w-full p-6 lg:p-12 flex justify-between items-start hud-element z-30 opacity-0 -translate-y-6">
-          <div className="space-y-1">
-            <div className="text-[10px] text-white tracking-[0.4em] font-bold uppercase">
-              SYS_ID: {currentBanner?._id?.slice(0,8)}
-            </div>
-            <div className="text-[8px] text-white/40 tracking-widest uppercase">Status: Operational</div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden md:block text-[8px] text-white/30 tracking-widest uppercase">256-BIT_ENCRYPT</span>
-            <div className="size-2 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
-          </div>
-        </div>
+      {/* 
+        Increased pt-32 (padding-top) so the content clears the fixed global header.
+        Kept min-h-[75dvh] as requested.
+      */}
+      <div ref={containerRef} className="carousel-container relative w-full min-h-[75dvh] pt-32 pb-12 bg-[#141311] text-[#EAE6E1] flex flex-col items-center justify-center font-sans overflow-hidden">
 
         {/* MAIN DISPLAY AREA */}
-        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-12 z-20 w-full px-6">
-          
-          {/* SIDE GAUGE */}
-          <div className="hidden lg:flex h-72 flex-col-reverse gap-1.5 hud-element opacity-0 translate-x-[-20px]">
-            {[...Array(20)].map((_, i) => (
-              <div key={i} className="progress-segment w-6 h-[1px] bg-white/10" />
-            ))}
-            <div className="text-[8px] text-white/20 mb-6 -rotate-90 origin-left translate-x-3 tracking-[0.6em] font-bold">ARC_VELOCITY</div>
+        <div className="relative flex flex-col lg:flex-row items-center justify-center gap-16 z-20 w-full px-6 max-w-[1400px] mx-auto flex-1">
+
+          {/* SIDE PROGRESSION (Stripped of text for minimalism) */}
+          <div className="hidden lg:flex h-56 flex-col items-center justify-center gallery-element opacity-0 -translate-x-4">
+            <div className="w-[1px] h-32 bg-white/10 relative overflow-hidden">
+              <div className="progress-fill absolute top-0 w-full h-full bg-[#EAE6E1]" />
+            </div>
           </div>
 
-          {/* THE IMAGE BOX */}
-          <div className="hud-element opacity-0 scale-95 transition-transform duration-700">
-            {/* 1. Static Outer Frame (Padding and Accents stay here) */}
-            <div className="relative w-[280px] sm:w-[350px] lg:w-[420px] aspect-[4/5] bg-neutral-900 border border-white/10 p-1.5 shadow-2xl">
-              
-              {/* 2. Animated Inner Frame (Isolates GSAP modifications from the layout) */}
-              <div ref={imageRef} className="relative w-full h-full overflow-hidden will-change-[clip-path,filter] transform-gpu contain-strict">
+          {/* THE CANVAS (IMAGE BOX) */}
+          <div className="gallery-element opacity-0 transition-transform duration-1000 ease-out">
+            <div className="relative w-[280px] sm:w-[320px] lg:w-[420px] aspect-[4/5] bg-[#1A1917] p-2 md:p-3 shadow-2xl">
+              <div ref={imageRef} className="relative w-full h-full overflow-hidden will-change-[clip-path,opacity] transform-gpu bg-neutral-900">
                 {images.map((img, i) => (
-                  <div key={i} className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
-                    <Image 
-                      src={imageUrl(img).url()} 
-                      alt="Archive" 
-                      fill 
-                      className="object-cover grayscale-[0.2] contrast-[1.1]"
+                  <div key={i} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
+                    <Image
+                      src={imageUrl(img).url()}
+                      alt={currentBanner?.name || "Artwork"}
+                      fill
+                      className="object-cover"
                       priority={i === 0}
                     />
                   </div>
                 ))}
-                
-                {/* Scanline Effect */}
-                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-30 bg-[length:100%_2px,3px_100%]" />
               </div>
-
-              {/* Corner Accents (Safe outside the clip-path) */}
-              <div className="absolute -top-1 -left-1 size-6 border-t-2 border-l-2 border-orange-500 z-20 pointer-events-none" />
-              <div className="absolute -bottom-1 -right-1 size-6 border-b-2 border-r-2 border-orange-500 z-20 pointer-events-none" />
             </div>
           </div>
 
-          {/* BRANDING */}
-          <div className="hud-element space-y-4 lg:space-y-8 max-w-sm text-center lg:text-left opacity-0 translate-x-[20px]">
-            <div className="space-y-2">
-              <span className="text-orange-500 text-[10px] tracking-[0.5em] font-bold uppercase block">Core_Archive_v1</span>
-              <h1 className="text-4xl lg:text-7xl text-white font-serif italic tracking-tighter leading-none">
-                {currentBanner?.name || "Collection"}
+          {/* EDITORIAL TEXT */}
+          <div className="gallery-element space-y-6 max-w-md text-center lg:text-left opacity-0 translate-x-4">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-tight leading-[1.1] font-light">
+                {currentBanner?.name || "The Collection"}
               </h1>
             </div>
-            <p className="text-[10px] text-white/50 leading-relaxed uppercase tracking-widest px-4 lg:px-0 border-white/10 lg:border-l lg:pl-6">
-              {currentBanner?.description}
+            <p className="text-xs text-[#EAE6E1]/50 leading-relaxed font-light px-4 lg:px-0">
+              {currentBanner?.description || "An exploration of form, light, and narrative. Engineered for longevity."}
             </p>
           </div>
         </div>
 
-        {/* BOTTOM HUD: CONTROLS */}
-        <div className="absolute bottom-0 w-full p-6 lg:p-12 flex flex-row items-end justify-between hud-element z-30 opacity-0 translate-y-6">
+        {/* BOTTOM CONTROLS */}
+        <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-12 mt-12 flex flex-row items-end justify-between gallery-element z-30 opacity-0 translate-y-4">
+
+          {/* Index Counter */}
           <div className="flex flex-col">
-            <span className="text-[9px] text-white/20 tracking-[0.4em] mb-2 uppercase">Frame_Index</span>
-            <div className="flex items-baseline gap-2">
-              {/* Added tabular-nums to prevent character width jumping */}
-              <span className="text-5xl lg:text-7xl font-mono italic text-white leading-none tabular-nums">0{index + 1}</span>
-              <span className="text-xs lg:text-sm text-white/20 font-light">/ 0{images.length}</span>
+            <div className="flex items-baseline gap-2 font-serif">
+              <span className="text-3xl lg:text-4xl text-[#EAE6E1] leading-none tabular-nums font-light">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="text-xs lg:text-sm text-[#EAE6E1]/30 italic">
+                / {String(images.length).padStart(2, '0')}
+              </span>
             </div>
           </div>
 
-          <button 
-            onClick={manualNext} 
-            className="group relative overflow-hidden h-12 lg:h-16 px-8 lg:px-14 bg-white text-black text-[10px] font-bold tracking-[0.4em] uppercase transition-all"
+          {/* Action Button */}
+          <button
+            onClick={manualNext}
+            className="group relative overflow-hidden h-10 lg:h-12 px-8 lg:px-10 border border-[#EAE6E1]/20 hover:border-[#EAE6E1]/60 text-[#EAE6E1] text-[10px] tracking-[0.2em] uppercase transition-all duration-500 ease-out"
           >
-            <span className="relative z-10 group-hover:text-white transition-colors">Manual_Shift</span>
-            <div className="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            <span className="relative z-10">Next Look</span>
+            <div className="absolute inset-0 bg-[#EAE6E1]/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
           </button>
         </div>
 

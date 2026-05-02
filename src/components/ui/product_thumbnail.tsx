@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,72 +7,62 @@ import { imageUrl } from '@/lib/imageUrl';
 
 const ProductThumbnail = ({ product, index }: { product: Product; index: number }) => {
   const isOutOfStock = (product.stock || 0) <= 0;
-  // Pad index for the serial number (e.g., 01, 02)
-  const serial = String(index + 1).padStart(2, '0');
 
   return (
-    <div className="group relative w-full mb-12">
+    <div className="group relative w-full mb-8">
       <Link href={`/product/${product.slug?.current}`} className="block">
-        
-        {/* Serial Number & PEACH ON BLACK TAG (Top Right) */}
-        <div className="flex justify-between items-center mb-4 relative z-10">
-          <span className="text-[9px] font-mono tracking-widest text-black/30">
-            № {serial} / 2026
-          </span>
-          {/* THE FIX: Peach background, Black text tag */}
-          <div className="bg-[#f97316] text-black px-2 py-0.5 min-w-[50px] text-center shadow-sm">
-            <span className="text-[10px] font-mono font-bold tracking-tighter">
-              ${product.price?.toLocaleString()}
-            </span>
-          </div>
-        </div>
 
-        {/* Image Container */}
-        {/* bg-white for a cleaner integration with your grid */}
-        <div className="relative aspect-[3/4] w-full overflow-hidden bg-white border border-black/[0.03]">
+        {/* ── Image Container ── */}
+        <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100 mb-6 shadow-sm">
           {product.images?.[0] && (
             <Image
               src={imageUrl(product.images[0]).url()}
-              alt={product.name || ''}
+              alt={product.name || 'Garment view'}
               fill
-              sizes="(max-width: 768px) 100vw, 25vw"
-              className={`object-cover transition-transform duration-[1.5s] ease-[cubic-bezier(0.2,1,0.3,1)] group-hover:scale-110 ${
-                isOutOfStock ? 'opacity-20 grayscale' : 'opacity-100'
-              }`}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              className={`object-cover transition-transform duration-[2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 ${isOutOfStock ? 'opacity-50 grayscale' : 'opacity-100'
+                }`}
             />
           )}
 
-          {/* Out of Stock Status */}
+          {/* Elegant Out of Stock Overlay */}
           {isOutOfStock && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
-              <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-black border border-black bg-white px-3 py-1.5">
+            <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-[2px] transition-all duration-500">
+              <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-neutral-900 bg-white/90 px-6 py-3 shadow-sm">
                 Archived
               </span>
             </div>
           )}
-          
-          {/* Subtle Hover Overlay for Interaction */}
-          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+          {/* Subtle Hover Overlay */}
+          <div className="absolute inset-0 bg-black/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         </div>
 
-        {/* Info Block */}
-        <div className="mt-8 relative border-t border-black/[0.03] pt-6 space-y-4">
-          <div className="flex flex-col space-y-1">
-            <h2 className="text-lg font-serif italic tracking-tight text-black group-hover:italic transition-all duration-300">
+        {/* ── Editorial Info Block ── */}
+        <div className="flex flex-col space-y-2 px-1">
+          <div className="flex justify-between items-baseline gap-4">
+            <h2 className="text-lg md:text-xl font-serif tracking-tight text-neutral-900 group-hover:italic transition-all duration-500">
               {product.name}
             </h2>
-            <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-black/40">
-              {product.categories?.[0] ? "Category" : "Essential Archive"}
-            </p>
+            <span className="text-xs font-sans text-neutral-500 tracking-widest whitespace-nowrap">
+              ${product.price?.toLocaleString()}
+            </span>
           </div>
-          
-          {/* Technical Note (Appears on hover) */}
-          <div className="opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100 h-0 group-hover:h-auto overflow-hidden">
-            <p className="text-[11px] text-black/60 font-serif italic leading-relaxed max-w-[220px]">
-              High-stress engineered component. Verified and sealed for shipment.
-            </p>
+
+          <div className="flex justify-between items-center text-[10px] font-sans uppercase tracking-[0.2em] text-neutral-400">
+            <span>{product.categories?.[0] ? "Core Collection" : "Essential Archive"}</span>
+          </div>
+
+          {/* Poetic Note (Reveals smoothly on hover) */}
+          <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            <div className="overflow-hidden">
+              <p className="text-xs text-neutral-500 font-light leading-relaxed pt-4 pb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 max-w-[90%]">
+                Crafted with intention. Designed for a draped, structural fit that endures shifting seasons and fleeting trends.
+              </p>
+            </div>
           </div>
         </div>
+
       </Link>
     </div>
   );

@@ -17,33 +17,18 @@ type CategoriesProps = {
 
 const Categories = ({ featuredCategories }: CategoriesProps) => {
   const componentRoot = useRef<HTMLDivElement>(null);
-  const needleRef = useRef<SVGLineElement>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. SPEEDOMETER NEEDLE ANIMATION
-      gsap.to(needleRef.current, {
-        rotation: 180,
-        transformOrigin: "bottom center",
-        ease: "none",
-        scrollTrigger: {
-          trigger: componentRoot.current,
-          start: "top center",
-          end: "bottom center",
-          scrub: 1.5,
-        }
-      });
-
-      // 2. STRIP REVEAL
-      gsap.utils.toArray<HTMLDivElement>('.category-strip').forEach((strip) => {
-        console.log(`strip is: ${strip}`);
-        gsap.from(strip?.querySelector('.strip-inner'), {
-          scaleX: 0.95,
+      // Elegant, smooth reveal for each category row
+      gsap.utils.toArray<HTMLDivElement>('.category-row').forEach((row) => {
+        gsap.from(row, {
+          y: 40,
           opacity: 0,
-          duration: 1.5,
-          ease: "expo.out",
+          duration: 1.2,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: strip,
+            trigger: row,
             start: "top 90%",
           }
         });
@@ -53,102 +38,55 @@ const Categories = ({ featuredCategories }: CategoriesProps) => {
     return () => ctx.revert();
   }, []);
 
-  return (
-    <section ref={componentRoot} className="w-full py-40 bg-[#fcfcfc] relative overflow-hidden">
-      
-      {/* --- SPEEDOMETER GAUGE BACKGROUND --- */}
-      <div className="absolute top-20 left-[-5%] opacity-[0.03] pointer-events-none">
-        <svg width="500" height="500" viewBox="0 0 200 100" fill="none" className="overflow-visible">
-          <path d="M20 100 A 80 80 0 0 1 180 100" stroke="black" strokeWidth="0.5" strokeDasharray="2 2" />
-          {[...Array(11)].map((_, i) => (
-            <line 
-              key={i}
-              x1="100" y1="20" x2="100" y2="25"
-              stroke="black"
-              strokeWidth="1"
-              style={{ transform: `rotate(${i * 18 - 90}deg)`, transformOrigin: '100px 100px' }}
-            />
-          ))}
-          <line 
-            ref={needleRef}
-            x1="100" y1="100" x2="100" y2="30" 
-            stroke="#f97316"
-            strokeWidth="1.5"
-            style={{ transform: `rotate(-90deg)` }}
-          />
-          <circle cx="100" cy="100" r="4" fill="black" />
-        </svg>
-      </div>
+  if (!featuredCategories || featuredCategories.length === 0) return null;
 
+  return (
+    <section ref={componentRoot} className="w-full py-32 bg-[#FAFAFA] relative overflow-hidden">
       <Container>
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-32 gap-8 relative z-10">
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-                <div className="h-[1px] w-12 bg-orange-500" />
-                <span className="text-[10px] font-mono tracking-[0.8em] text-black/30 uppercase">
-                    Velocity_Index // Archive
-                </span>
-            </div>
-            <h3 className="text-7xl md:text-9xl font-serif font-light tracking-tighter leading-none text-black">
-              Aesthetic <br /> 
-              <span className="italic text-neutral-300 ml-16">Metrics.</span>
-            </h3>
-          </div>
-          <div className="flex flex-col items-end text-right">
-             <p className="text-[9px] font-mono uppercase tracking-[0.4em] text-neutral-400 max-w-[220px] leading-relaxed">
-               Calibrating textile weight, visual density, and structural integrity.
-             </p>
-          </div>
+
+        {/* --- EDITORIAL HEADER --- */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
+          <h3 className="text-5xl md:text-7xl font-serif font-light tracking-tight text-neutral-900 leading-tight">
+            Curated <br />
+            <span className="italic text-neutral-400">Collections.</span>
+          </h3>
+          <p className="text-sm text-neutral-500 max-w-xs font-light leading-relaxed pb-2">
+            Explore our meticulously selected categories, designed for the modern aesthetic and crafted with intentionality.
+          </p>
         </div>
 
-        {/* The Strip Grid */}
-        <div className="space-y-2 relative z-10">
+        {/* --- MINIMALIST CATALOG LIST --- */}
+        <div className="border-t border-black/[0.06]">
           {featuredCategories.map((category, index) => {
             const img = category.image?.asset ? imageUrl(category.image).url() : null;
 
             return (
-              <div key={category._id} className="category-strip group relative">
+              <div key={category._id} className="category-row group relative border-b border-black/[0.06]">
                 <Link href={`/category/${category.slug?.current}`} className="block">
-                  <div className="strip-inner relative h-[25vh] md:h-[22vh] w-full bg-white overflow-hidden flex items-center border-y border-black/[0.03] group-hover:border-black/10 transition-colors duration-500">
-                    
-                    {/* --- PERSISTENT IMAGE BOX --- */}
-                    {/* Changed from w-0 to w-1/3 or w-1/2 for static visibility */}
-                    <div className="absolute right-0 top-0 h-full w-[40%] md:w-[30%] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
-                        {img && (
-                          <Image
-                              src={img}
-                              alt={category.title || ''}
-                              fill
-                              className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
-                          />
-                        )}
-                        {/* Technical Overlay Line */}
-                        <div className="absolute inset-0 border-l border-black/5" />
+                  <div className="flex items-center justify-between py-12 md:py-16 px-4 transition-colors duration-500 hover:bg-white">
+
+                    {/* Left: Index & Title */}
+                    <div className="flex items-baseline gap-8 md:gap-16 z-10">
+                      <span className="text-xs tracking-[0.2em] text-neutral-400">
+                        0{index + 1}
+                      </span>
+                      <h4 className="text-4xl md:text-6xl font-serif text-neutral-900 tracking-tight group-hover:italic group-hover:translate-x-4 transition-all duration-700 ease-out">
+                        {category.title}
+                      </h4>
                     </div>
 
-                    {/* Content Overlay */}
-                    <div className="relative z-10 w-full px-8 md:px-12 flex items-center">
-                      <div className="flex items-center gap-12">
-                        {/* SPEC Label */}
-                        <span className="text-black/10 font-mono text-[10px] group-hover:text-orange-500 transition-colors duration-500">
-                          SPEC_{String(index + 1).padStart(2, '0')}
-                        </span>
-                        {/* Title */}
-                        <h4 className="text-4xl md:text-6xl font-serif text-black tracking-tighter group-hover:pl-4 transition-all duration-500 group-hover:italic">
-                          {category.title}
-                        </h4>
-                      </div>
-
-                      {/* Spacer to push some HUD elements if needed */}
-                      <div className="ml-auto flex items-center gap-6 pr-[40%] md:pr-[30%]">
-                          <span className="hidden lg:block text-[7px] font-mono text-black/10 tracking-[0.4em] uppercase group-hover:text-black/40 transition-colors">
-                            DATA_SET_STABLE
-                          </span>
-                          <div className="size-8 rounded-full border border-black/5 flex items-center justify-center group-hover:bg-black group-hover:border-black transition-all">
-                             <div className="size-1 bg-black group-hover:bg-white rounded-full" />
-                          </div>
-                      </div>
+                    {/* Right: Persistent Image */}
+                    <div className="relative w-[35%] md:w-[25%] aspect-[4/3] md:aspect-[16/9] overflow-hidden bg-neutral-100 z-10">
+                      {img && (
+                        <Image
+                          src={img}
+                          alt={category.title || 'Category image'}
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
+                        />
+                      )}
+                      {/* Subtle darkening overlay that fades out on hover */}
+                      <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-700" />
                     </div>
 
                   </div>
@@ -158,16 +96,6 @@ const Categories = ({ featuredCategories }: CategoriesProps) => {
           })}
         </div>
 
-        {/* Status Footer */}
-        <div className="mt-24 flex justify-between items-center border-t border-black/5 pt-8">
-            <div className="flex items-center gap-2">
-                <div className="size-1 bg-orange-500 animate-pulse" />
-                <span className="text-[8px] font-mono tracking-widest text-black/40 uppercase">Calibration_Stable</span>
-            </div>
-            <Link href="/shop" className="group flex items-center gap-4">
-                <span className="text-[10px] uppercase tracking-[0.6em] text-black hover:text-orange-500 transition-colors font-mono">Full_Scan</span>
-            </Link>
-        </div>
       </Container>
     </section>
   );

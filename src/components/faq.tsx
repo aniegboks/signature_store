@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import Container from './ui/container';
@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { ALL_FAQ_QUERYResult } from '../../sanity.types';
 import { imageUrl } from '@/lib/imageUrl';
 import gsap from 'gsap';
-import { Terminal, Plus, Minus, Settings2 } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 
 type FaqProps = {
     allFaq: ALL_FAQ_QUERYResult;
@@ -19,173 +19,135 @@ const Faq = ({ allFaq }: FaqProps) => {
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
-            // Reveal animation
+            // Elegant, staggered reveal
             gsap.from(".faq-reveal", {
-                y: 20,
+                y: 40,
                 opacity: 0,
-                duration: 1,
-                stagger: 0.05,
+                duration: 1.2,
+                stagger: 0.1,
                 ease: "power3.out",
             });
 
-            const handleMouseMove = (e: MouseEvent) => {
-                const { clientX, clientY } = e;
-                // Calculations rounded to prevent sub-pixel blur
-                const xPos = Math.round((clientX / window.innerWidth - 0.5) * 20);
-                const yPos = Math.round((clientY / window.innerHeight - 0.5) * 20);
+            // Heavy, luxurious photo parallax (replacing the loose sketch effect)
+            if (imageRef.current) {
+                const xTo = gsap.quickTo(imageRef.current, "x", { duration: 1.5, ease: "power3.out" });
+                const yTo = gsap.quickTo(imageRef.current, "y", { duration: 1.5, ease: "power3.out" });
 
-                gsap.to(imageRef.current, {
-                    x: xPos,
-                    y: yPos,
-                    duration: 1.5,
-                    ease: "power2.out",
-                    // THE BLUR FIX: ensures rendering is sharp
-                    force3D: false, 
-                });
-            };
+                const handleMouseMove = (e: MouseEvent) => {
+                    const { clientX, clientY } = e;
+                    const xNorm = (clientX / window.innerWidth - 0.5);
+                    const yNorm = (clientY / window.innerHeight - 0.5);
 
-            window.addEventListener("mousemove", handleMouseMove);
-            return () => window.removeEventListener("mousemove", handleMouseMove);
+                    // Subtle, heavy movement (max 15px shift)
+                    xTo(xNorm * 15);
+                    yTo(yNorm * 15);
+                };
+
+                window.addEventListener("mousemove", handleMouseMove);
+                return () => window.removeEventListener("mousemove", handleMouseMove);
+            }
         }, rootRef);
 
         return () => ctx.revert();
     }, []);
 
+    if (!allFaq || allFaq.length === 0) return null;
+
     return (
-        <section ref={rootRef} className="relative w-full py-24 md:py-40 bg-[#fbfbfb] overflow-hidden">
-            
-            {/* TECHNICAL BLUEPRINT GRID BACKGROUND */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-                 style={{ backgroundImage: `radial-gradient(#000 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-black/[0.03]" />
-
+        <section ref={rootRef} className="relative w-full py-32 md:py-40 bg-[#FAFAFA] text-neutral-900 overflow-hidden">
             <Container>
-                {/* HUD Header: Technical Engine Specs Style */}
-                <div className="mb-32 relative">
-                    <div className="absolute top-0 left-0 flex flex-col gap-1 opacity-20 hidden md:flex">
-                        <span className="text-[7px] font-mono tracking-tighter">ENGINE_TYPE: V12_BITURBO</span>
-                        <span className="text-[7px] font-mono tracking-tighter">SERIAL: 0092-2026-X</span>
-                    </div>
+                <div className="relative flex flex-col lg:flex-row items-start justify-between gap-16 xl:gap-24">
 
-                    <div className="flex flex-col items-center text-center">
-                        <div className="faq-reveal flex items-center gap-3 mb-6 bg-black text-white px-3 py-1">
-                            <Settings2 size={10} className="text-orange-500 animate-spin-slow" />
-                            <span className="text-[9px] uppercase tracking-[0.4em] font-mono font-bold">
-                                Manual_Specifications
+                    {/* LEFT COLUMN: Editorial Header & Accordion */}
+                    <div className="w-full lg:max-w-2xl order-2 lg:order-1 z-20">
+
+                        <div className="faq-reveal mb-20 relative space-y-6">
+                            <span className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 block">
+                                Client Protocol
                             </span>
+                            <h2 className="text-5xl md:text-7xl font-serif tracking-tight text-neutral-900 leading-none">
+                                Garment <span className="italic font-light text-neutral-400">Care.</span>
+                            </h2>
                         </div>
-                        <h2 className="faq-reveal text-6xl md:text-8xl font-serif tracking-tighter text-neutral-900 leading-[0.85]">
-                            Technical <span className="italic font-light text-orange-500">Manual</span>
-                        </h2>
-                    </div>
-                </div>
 
-                <div className="relative flex flex-col lg:flex-row items-start justify-between gap-12 xl:gap-24">
-                    
-                    {/* Sticky Image: Mechanical Diagram Style */}
-                    <div className="sticky top-32 hidden lg:block order-2 lg:order-1">
-                        <div 
-                            ref={imageRef}
-                            className="faq-reveal relative w-[420px] h-[560px] bg-neutral-200 shadow-2xl overflow-visible"
-                        >
-                            {/* Technical Corner Notches */}
-                            <div className="absolute -top-4 -left-4 font-mono text-[10px] text-orange-500 font-bold">01_DIAGRAM</div>
-                            
-                            <div className="relative w-full h-full grayscale overflow-hidden border-[12px] border-white shadow-inner">
-                                {allFaq?.[0]?.image && (
-                                    <Image
-                                        src={imageUrl(allFaq[0].image).url()}
-                                        alt="Engine Components"
-                                        fill
-                                        className="object-cover transition-transform duration-[3s] ease-out hover:scale-110"
-                                        priority
-                                    />
-                                )}
-                                {/* Scanline HUD Overlay */}
-                                <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.05)_50%)] bg-[length:100%_4px] pointer-events-none" />
-                            </div>
-
-                            {/* Telemetry Data Points */}
-                            <div className="absolute top-1/4 -right-8 flex flex-col gap-4">
-                                {[1, 2, 3].map((n) => (
-                                    <div key={n} className="flex items-center gap-2">
-                                        <div className="size-1.5 bg-orange-500 rotate-45" />
-                                        <div className="h-px w-8 bg-black/10" />
-                                        <span className="text-[8px] font-mono opacity-40">PT_{n}00</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Accordion List: Machine-Parts Style */}
-                    <div className="w-full lg:max-w-3xl order-1 lg:order-2">
-                        <div className="border-t border-black/10">
+                        <div className="border-t border-black/[0.06]">
                             {allFaq?.[0]?.items?.map((item, i) => {
                                 const isOpen = openIndex === i;
 
                                 return (
-                                    <div 
-                                        key={item._key} 
-                                        className={`faq-reveal border-b border-black/5 transition-colors duration-500 ${isOpen ? 'bg-white' : 'hover:bg-neutral-100/50'}`}
+                                    <div
+                                        key={item._key}
+                                        className={`faq-reveal border-b border-black/[0.06] transition-colors duration-700 ${isOpen ? 'bg-white' : 'hover:bg-white/50'
+                                            }`}
                                     >
                                         <button
                                             onClick={() => setOpenIndex(isOpen ? null : i)}
-                                            className="w-full px-4 md:px-8 py-12 text-left flex items-start justify-between group"
+                                            className="w-full px-4 md:px-8 py-10 text-left flex items-start justify-between group"
                                         >
-                                            <div className="flex gap-8 md:gap-12 items-start">
-                                                <div className="flex flex-col items-center gap-2">
-                                                    <span className={`text-[10px] font-mono font-bold transition-colors ${isOpen ? 'text-orange-500' : 'text-neutral-300'}`}>
-                                                        {String(i + 1).padStart(2, '0')}
-                                                    </span>
-                                                    <div className={`w-px h-8 transition-all duration-500 ${isOpen ? 'bg-orange-500 h-12' : 'bg-neutral-200'}`} />
-                                                </div>
+                                            <div className="flex gap-8 items-start">
+                                                {/* Minimalist Index */}
+                                                <span className={`text-xs mt-1 transition-colors duration-500 ${isOpen ? 'text-neutral-900' : 'text-neutral-300'
+                                                    }`}>
+                                                    0{i + 1}
+                                                </span>
 
-                                                <div className="space-y-6">
-                                                    <h3 className={`text-2xl md:text-3xl tracking-tighter font-serif transition-all duration-500 ${isOpen ? 'text-black' : 'text-neutral-400'}`}>
+                                                <div className="space-y-4 flex-1">
+                                                    <h3 className={`text-xl font-serif transition-colors duration-500 leading-snug ${isOpen ? 'text-neutral-900 italic' : 'text-neutral-600 group-hover:text-neutral-900'
+                                                        }`}>
                                                         {item.question}
                                                     </h3>
 
-                                                    <div 
-                                                        className={`overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] ${
-                                                            isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-                                                        }`}
+                                                    <div
+                                                        className={`overflow-hidden transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? 'max-h-[400px] opacity-100 mt-6' : 'max-h-0 opacity-0 mt-0'
+                                                            }`}
                                                     >
-                                                        <p className="text-base md:text-lg text-neutral-500 font-light leading-relaxed max-w-xl pb-4">
+                                                        <p className="text-xs text-neutral-500 font-light leading-relaxed max-w-md pb-2">
                                                             {item.answer}
                                                         </p>
-                                                        {/* Metadata for answer */}
-                                                        <div className="flex gap-4 pt-4 border-t border-black/[0.03]">
-                                                            <span className="text-[8px] font-mono uppercase tracking-widest text-orange-500/50">Verified_Data</span>
-                                                            <span className="text-[8px] font-mono uppercase tracking-widest text-neutral-300">Auth_ID: 992-0</span>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className={`transition-transform duration-500 p-2 border ${isOpen ? 'border-orange-500 text-orange-500 rotate-180' : 'border-black/5 text-neutral-300 group-hover:border-black/20'}`}>
-                                                {isOpen ? <Minus size={12} /> : <Plus size={12} />}
+                                            {/* Clean, unboxed icon */}
+                                            <div className={`mt-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? 'text-neutral-900 rotate-180' : 'text-neutral-300 group-hover:text-neutral-600'
+                                                }`}>
+                                                {isOpen ? <Minus size={16} strokeWidth={1} /> : <Plus size={16} strokeWidth={1} />}
                                             </div>
                                         </button>
                                     </div>
                                 );
                             })}
                         </div>
+                    </div>
 
-                        {/* End of File HUD */}
-                        <div className="faq-reveal mt-20 p-8 border border-dashed border-black/10 flex justify-between items-center bg-neutral-50/50">
-                            <div className="flex items-center gap-4">
-                                <Terminal size={14} className="opacity-20" />
-                                <div className="space-y-1">
-                                    <p className="text-[9px] font-mono leading-none tracking-[0.2em] uppercase">Status: Document_Finalized</p>
-                                    <p className="text-[7px] font-mono text-neutral-400 uppercase">Checksum: 8829100X-SIG</p>
-                                </div>
-                            </div>
-                            <div className="text-right hidden sm:block">
-                                <p className="text-[7px] font-mono text-neutral-300 uppercase leading-relaxed">Archive Signature Series<br/>All Rights Reserved // 2026</p>
+                    {/* RIGHT COLUMN: Heavy Editorial Photograph */}
+                    <div className="sticky top-40 hidden lg:block order-1 lg:order-2 z-10">
+                        <div
+                            ref={imageRef}
+                            className="faq-reveal relative w-[420px] aspect-[3/4] bg-neutral-100 overflow-hidden will-change-transform"
+                        >
+                            {allFaq?.[0]?.image && (
+                                <Image
+                                    src={imageUrl(allFaq[0].image).url()}
+                                    alt="Garment details"
+                                    fill
+                                    className="object-cover transition-transform duration-[6s] ease-out hover:scale-105 grayscale hover:grayscale-0"
+                                    priority
+                                />
+                            )}
+                            {/* Subtle overlay to soften the image contrast natively */}
+                            <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+
+                            {/* Minimal structural detail replacing the tape */}
+                            <div className="absolute bottom-6 left-6 flex items-center gap-3">
+                                <div className="h-px w-6 bg-white/60" />
+                                <span className="font-sans text-[9px] uppercase tracking-widest text-white/80 mix-blend-difference">
+                                    Archive_Ref
+                                </span>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </Container>
         </section>

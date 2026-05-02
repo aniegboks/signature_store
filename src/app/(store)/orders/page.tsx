@@ -18,124 +18,117 @@ const OrdersPage = async () => {
     const orders: MY_QUERY_ORDERSResult = await getMyOrders(userId);
 
     return (
-        <div className="relative min-h-screen bg-[#F5F5F5] py-32 md:py-48 selection:bg-[#f97316] selection:text-black">
-            {/* SUBTLE DOT GRID BACKGROUND */}
-            <div 
-                className="absolute inset-0 pointer-events-none opacity-[0.03]" 
-                style={{ backgroundImage: 'radial-gradient(#000000 1px, transparent 0)', backgroundSize: '32px 32px' }} 
-            />
-
+        <div className="relative min-h-screen bg-neutral-50 py-32 lg:py-48 selection:bg-black selection:text-white">
             <Container>
-                {/* HUD HEADER */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 border-b border-black/10 pb-12">
-                    <div>
-                        <div className="flex items-center gap-3 mb-4">
-                            <span className="bg-[#f97316] text-black px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-widest shadow-md">
-                                Archive_Access
+                {/* --- EDITORIAL HEADER --- */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20 border-b border-black/5 pb-12">
+                    <div className="space-y-4">
+                        {/* <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-medium tracking-[0.3em] text-neutral-400 uppercase">
+                                Personal History
                             </span>
-                            <span className="text-[10px] font-mono text-black/30 uppercase tracking-[0.3em]">
-                                User_ID // {userId.slice(-8).toUpperCase()}
-                            </span>
-                        </div>
-                        <h1 className="text-5xl md:text-7xl font-serif italic text-black leading-none uppercase tracking-tighter">
-                            Orders
+                            <div className="w-8 h-px bg-neutral-200" />
+                        </div> */}
+                        <h1 className="text-6xl md:text-8xl font-serif italic leading-none tracking-tighter text-[#1A1A1A]">
+                            Your <span className="text-neutral-300 not-italic">Collection.</span>
                         </h1>
                     </div>
-                    <div className="text-right">
-                        <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest">
-                            Total_Transmissions: {orders.length}
+                    <div className="text-left md:text-right">
+                        <p className="text-[10px] font-medium text-neutral-400 uppercase tracking-widest leading-relaxed">
+                            Member Ref. {userId.slice(-8).toUpperCase()} <br />
+                            Total Pieces Acquired: {orders.length}
                         </p>
                     </div>
                 </div>
 
                 {orders.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-black/5 rounded-xl">
-                        <p className="font-mono text-xs uppercase tracking-[0.4em] text-black/20 italic">
-                            No_Orders_Found_In_Log
+                    <div className="flex flex-col items-center justify-center py-32 border border-dashed border-black/10">
+                        <p className="font-serif italic text-xl text-neutral-300">
+                            Your collection is currently empty.
                         </p>
                     </div>
                 ) : (
-                    <div className="space-y-12">
+                    <div className="space-y-16 lg:space-y-24">
                         {orders.map((order, index) => (
                             <div
                                 key={order.orderNumber}
-                                className="group relative bg-white border border-black/5 p-6 md:p-10 transition-all hover:border-[#f97316]/30 shadow-sm"
+                                className="group relative"
                             >
-                                {/* ORDER INDEX NODE */}
-                                <span className="absolute top-4 left-4 text-[9px] font-mono text-black/20 font-bold">
-                                    RECORD_0{index + 1}
-                                </span>
+                                {/* --- ORDER METADATA --- */}
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 pb-12 border-b border-black/5">
 
-                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                                    
-                                    {/* LEFT SIDE: TELEMETRY DATA */}
-                                    <div className="lg:col-span-4 space-y-8 border-r border-black/5 pr-6">
-                                        <div>
-                                            <label className="text-[9px] font-mono text-[#f97316] uppercase tracking-widest block mb-2 font-bold">
-                                                Transmission_ID
+                                    {/* PROVENANCE DETAILS */}
+                                    <div className="lg:col-span-4 space-y-10">
+                                        <div className="relative">
+                                            <span className="absolute -top-8 left-0 text-[10px] font-mono text-neutral-200">
+                                                [{String(index + 1).padStart(2, '0')}]
+                                            </span>
+                                            <label className="text-[9px] font-medium text-neutral-400 uppercase tracking-[0.3em] block mb-3">
+                                                Order Reference
                                             </label>
-                                            <p className="font-mono text-sm text-black break-all font-bold">
+                                            <p className="text-sm font-medium tracking-tight text-[#1A1A1A] break-all">
                                                 {order.orderNumber}
                                             </p>
                                         </div>
 
-                                        <div className="flex justify-between items-start">
+                                        <div className="flex justify-between items-start pt-6 border-t border-black/5">
                                             <div>
-                                                <label className="text-[9px] font-mono text-black/40 uppercase tracking-widest block mb-1">Date_Stamp</label>
-                                                <p className="text-sm font-serif italic text-black">
+                                                <label className="text-[9px] font-medium text-neutral-400 uppercase tracking-[0.3em] block mb-2">Ordered On</label>
+                                                <p className="text-base font-serif italic text-[#1A1A1A]">
                                                     {new Date(order._createdAt).toLocaleDateString(undefined, {
                                                         year: 'numeric',
-                                                        month: 'short',
+                                                        month: 'long',
                                                         day: 'numeric',
                                                     })}
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <label className="text-[9px] font-mono text-black/40 uppercase tracking-widest block mb-1 font-bold">Status</label>
-                                                <div className="flex items-center gap-2 justify-end">
-                                                    <span className={`size-1.5 rounded-full animate-pulse ${order.status === "paid" ? "bg-green-500" : "bg-[#f97316]"}`} />
-                                                    <span className={`text-[10px] font-mono uppercase tracking-widest font-bold ${order.status === "paid" ? "text-green-600" : "text-black"}`}>
-                                                        {order.status}
+                                                <label className="text-[9px] font-medium text-neutral-400 uppercase tracking-[0.3em] block mb-2">Status</label>
+                                                <div className="flex items-center gap-3 justify-end">
+                                                    <span className={`size-1.5 rounded-full ${order.status === "paid" ? "bg-black" : "bg-neutral-300"}`} />
+                                                    <span className="text-[10px] font-medium uppercase tracking-widest text-[#1A1A1A]">
+                                                        {order.status === "paid" ? "Confirmed" : "In Progress"}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="pt-6 border-t border-black/5">
-                                            <label className="text-[9px] font-mono text-black/40 uppercase tracking-widest block mb-1 font-bold">Financial_Value</label>
-                                            <p className="text-3xl font-mono font-bold text-black leading-none">
+                                        <div className="pt-6">
+                                            <label className="text-[9px] font-medium text-neutral-400 uppercase tracking-[0.3em] block mb-2">Investment Total</label>
+                                            <p className="text-3xl font-light tracking-tighter text-[#1A1A1A]">
                                                 {formatCurrency(order.totalPrice ?? 0, order.currency)}
                                             </p>
                                         </div>
                                     </div>
 
-                                    {/* RIGHT SIDE: PRODUCT MANIFEST */}
+                                    {/* ACQUIRED SILHOUETTES */}
                                     <div className="lg:col-span-8">
-                                        <label className="text-[9px] font-mono text-black/40 uppercase tracking-widest block mb-6 font-bold">Manifest_Items</label>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        <label className="text-[9px] font-medium text-neutral-400 uppercase tracking-[0.3em] block mb-8">Selection Details</label>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                             {order.products?.map((product) => (
-                                                <div 
+                                                <div
                                                     key={product.product?._id}
-                                                    className="flex items-center gap-4 bg-[#F9F9F9] p-4 border border-black/5 group-hover:bg-white transition-colors"
+                                                    className="flex items-center gap-6 bg-white p-5 border border-black/5 group-hover:border-black/6 transition-all duration-700 ease-out"
                                                 >
-                                                    {/* IMAGE CONTAINER - REMOVED WHITE BG AND BORDER */}
-                                                    <div className="relative h-20 w-20 flex-shrink-0">
+                                                    <div className="relative h-24 w-20 flex-shrink-0 bg-[#F5F4F0] overflow-hidden">
                                                         {product.product?.images?.[0] && (
                                                             <Image
                                                                 src={imageUrl(product.product.images[0]).url()}
                                                                 alt={product.product?.name || 'Item'}
                                                                 fill
-                                                                className="object-contain p-2 group-hover:scale-105 transition-transform duration-[1s]"
+                                                                className="object-cover transition-transform duration-[2s] group-hover:scale-110"
                                                             />
                                                         )}
                                                     </div>
-                                                    <div className="overflow-hidden">
-                                                        <p className="text-[9px] font-mono text-[#f97316] uppercase mb-1">QTY: {product.quantity || "1"}</p>
-                                                        <p className="text-sm font-serif italic text-black truncate leading-tight">
+                                                    <div className="flex flex-col justify-center overflow-hidden">
+                                                        <span className="text-[9px] font-medium text-neutral-400 uppercase tracking-widest mb-1">
+                                                            Qty: {product.quantity || "1"}
+                                                        </span>
+                                                        <h3 className="text-lg font-serif italic text-[#1A1A1A] truncate leading-tight mb-2">
                                                             {product.product?.name}
-                                                        </p>
-                                                        <p className="text-[10px] font-mono text-black/30 mt-1">
-                                                            UNIT_{product.product?.price?.toFixed(2)}
+                                                        </h3>
+                                                        <p className="text-[10px] font-medium text-neutral-300 uppercase tracking-[0.2em]">
+                                                            Individual / {formatCurrency(product.product?.price ?? 0, order.currency)}
                                                         </p>
                                                     </div>
                                                 </div>

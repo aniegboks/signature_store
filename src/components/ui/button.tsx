@@ -7,9 +7,9 @@ const buttonClasses = cva(
   {
     variants: {
       variant: {
-        // THE MAIN PEACH-ON-BLACK ACTION
+        // THE MAIN ACTION
         primary: 
-          'bg-black text-[#f97316] hover:bg-[#f97316] hover:text-black shadow-lg',
+          'bg-[#1A1A1A] text-white hover:bg-neutral-800 shadow-sm',
         
         // THE TECHNICAL WIREFRAME
         secondary: 
@@ -17,7 +17,7 @@ const buttonClasses = cva(
         
         // THE GHOST/INACTIVE STATE
         ghost:
-          'bg-transparent text-black/20 hover:text-[#f97316] tracking-[0.4em]',
+          'bg-transparent text-black/20 hover:text-neutral-900 tracking-[0.4em]',
       },
       size: {
         default: 'h-14 px-10',
@@ -45,9 +45,6 @@ const Button: React.FC<ButtonProps> = ({ variant, size, className, children, ...
       <span className="absolute top-0 left-0 size-1 border-t border-l border-current opacity-0 group-hover:opacity-100 transition-opacity" />
       
       <span className="relative z-10 flex items-center gap-2">
-        {variant === 'primary' && (
-          <span className="size-1 bg-[#f97316] rounded-full group-hover:bg-black transition-colors" />
-        )}
         {children}
       </span>
       

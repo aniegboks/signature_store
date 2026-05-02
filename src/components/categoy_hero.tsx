@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gauge, Zap, Activity } from 'lucide-react';
+import Image from 'next/image';
 
 interface HeroProps {
   title: string;
@@ -8,73 +8,80 @@ interface HeroProps {
 
 const CategoryHero = ({ title, subtitle }: HeroProps) => {
   return (
-    <section className="relative h-[65dvh] w-full bg-[#050505] overflow-hidden flex items-center border-b border-white/5">
-      
-      {/* --- ENGINE SCHEMATIC BACKGROUND --- */}
+    <section className="relative h-[65dvh] min-h-[600px] w-full bg-[#050505] overflow-hidden flex items-center border-b border-white/[0.04] pt-20">
+
+      {/* --- SUBTLE BACKGROUND TEXTURE --- */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Subtle Grid */}
-        <div className="absolute inset-0 opacity-[0.03]" 
-             style={{ backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
-        
-        {/* Animated Turbine Arc */}
-        <div className="absolute -right-24 top-1/2 -translate-y-1/2 size-[700px] border border-white/[0.02] rounded-full flex items-center justify-center">
-            <div className="size-[500px] border border-orange-500/10 rounded-full border-dashed animate-[spin_30s_linear_infinite]" />
-            <div className="absolute inset-0 bg-gradient-to-l from-[#050505] via-transparent to-[#050505] z-10" />
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* LEFT: PRIMARY DATA */}
-          <div className="lg:col-span-7 space-y-8">
-            <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-2 py-1 bg-white text-black font-mono text-[9px] uppercase tracking-widest">
-                    <Activity size={10} className="animate-pulse" />
-                    Archive_Verified
-                </div>
-                <span className="text-[9px] font-mono text-white/20 uppercase tracking-[0.4em]">Ref // {title.slice(0, 3)}_SPEC</span>
+      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 relative z-20">
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-16 lg:gap-24">
+
+          {/* ── LEFT: EDITORIAL TYPOGRAPHY ── */}
+          <div className="w-full lg:w-1/2 space-y-12">
+            <div className="space-y-6">
+              <h1 className="text-6xl md:text-8xl lg:text-[9rem] font-serif tracking-tight text-white leading-[0.85] capitalize">
+                {title}
+              </h1>
+              <p className="font-sans text-sm md:text-base text-white/50 font-light max-w-md leading-relaxed">
+                {subtitle || "A study in drape, weight, and silhouette. Engineered for longevity and effortless movement."}
+              </p>
             </div>
-            
-            <div className="space-y-4">
-                <h1 className="text-7xl md:text-[10rem] font-serif italic tracking-tighter text-white leading-[0.75] uppercase">
-                    {title}
-                </h1>
-                <p className="font-serif text-3xl text-white/40 italic max-w-lg leading-tight tracking-tight">
-                    {subtitle || "Optimized components for high-velocity digital curation."}
-                </p>
+
+            <div className="flex items-center gap-12 pt-8 border-t border-white/[0.06] max-w-md">
+              <div>
+                <span className="block text-[9px] uppercase tracking-[0.2em] text-white/40 mb-1">Season</span>
+                <span className="text-xs text-white tracking-widest font-light">Core / 01</span>
+              </div>
+              <div>
+                <span className="block text-[9px] uppercase tracking-[0.2em] text-white/40 mb-1">Availability</span>
+                <span className="text-xs text-white tracking-widest font-light">In Stock</span>
+              </div>
             </div>
+
           </div>
 
-          {/* RIGHT: ENGINE TELEMETRY */}
-          <div className="lg:col-span-5 flex flex-col gap-10 border-l border-white/5 pl-12 py-8">
-             <div className="space-y-4">
-                <div className="flex justify-between items-end">
-                    <span className="text-[10px] font-mono text-white/20 uppercase tracking-[0.5em]">Thrust_Efficiency</span>
-                    <span className="text-xs font-mono text-orange-500">98.4%</span>
-                </div>
-                <div className="h-px w-full bg-white/10 relative">
-                    <div className="absolute top-0 left-0 h-full bg-orange-500 w-[98%] shadow-[0_0_10px_#f97316]" />
-                </div>
-             </div>
+          {/* ── RIGHT: HIGH-END EDITORIAL ARTIFACT ── */}
+          <div className="hidden lg:flex w-full lg:w-1/2 h-full justify-end items-center">
 
-             <div className="grid grid-cols-2 gap-4">
-                <div className="group border border-white/5 bg-white/[0.01] p-6 hover:bg-white/[0.03] transition-colors">
-                    <Gauge size={18} className="text-white/20 mb-4 group-hover:text-orange-500 transition-colors" />
-                    <span className="block text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Compression</span>
-                    <span className="text-lg font-mono text-white">12.4:1</span>
+            <div className="relative w-[85%] max-w-[480px] aspect-[4/5] bg-[#0a0a0a] group">
+
+              {/* Subtle ambient glow behind the image on hover */}
+              <div className="absolute -inset-4 bg-white/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+
+              <div className="relative w-full h-full overflow-hidden border border-white/[0.04]">
+
+                {/* The Primary Image */}
+                <Image
+                  src="/assets/images/img-4.png"
+                  alt={`${title} editorial mood`}
+                  fill
+                  className="object-cover contrast-125 opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-[3s] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  priority
+                />
+
+                {/* Radial Vignette Overlay for depth */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.7)_100%)] pointer-events-none z-10 transition-opacity duration-[2s] group-hover:opacity-70" />
+
+                {/* Studio Inner Frame */}
+                <div className="absolute inset-4 md:inset-6 border border-white/[0.08] pointer-events-none z-20" />
+
+                {/* Physical Film Grain Texture Overlay */}
+                <div
+                  className="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none z-30"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
+                />
+
+                {/* Minimal Framing Typography */}
+                <div className="absolute bottom-8 right-8 flex items-center gap-3 z-40 text-white/70 mix-blend-screen">
+                  <span className="text-[9px] uppercase tracking-[0.2em]">Fig. 01</span>
+                  <div className="size-1.5 bg-white/70 rounded-full" />
                 </div>
-                <div className="group border border-white/5 bg-white/[0.01] p-6 hover:bg-white/[0.03] transition-colors">
-                    <Zap size={18} className="text-white/20 mb-4 group-hover:text-orange-500 transition-colors" />
-                    <span className="block text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Ignition_Seq</span>
-                    <span className="text-lg font-mono text-white uppercase">Active</span>
-                </div>
-             </div>
-             
-             <div className="flex items-center gap-3 text-white/10">
-                <div className="size-1 bg-white/20 rounded-full" />
-                <span className="text-[8px] font-mono tracking-[0.8em] uppercase">End_Of_Telemetry</span>
-             </div>
+
+              </div>
+            </div>
+
           </div>
 
         </div>

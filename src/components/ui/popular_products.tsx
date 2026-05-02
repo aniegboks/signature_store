@@ -9,62 +9,58 @@ const PopularProducts = ({ popularProduct }: { popularProduct: Product }) => {
   const isOutOfStock = (popularProduct.stock || 0) <= 0;
 
   return (
-    <div className="group relative w-full">
+    <div className="group relative w-full cursor-pointer">
       <Link
         href={`/product/${popularProduct.slug?.current}`}
-        className="block"
+        className="block w-full h-full"
       >
-        {/* Aspect Ratio 4:5 - Product Floats on the Section Background */}
-        <div className="relative aspect-[4/5] w-full overflow-hidden">
+        {/* Main Image Container - Clean, High-End Luxury Vibe */}
+        <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#fafafa]">
+
           {popularProduct.images?.[0] && (
             <Image
               src={imageUrl(popularProduct.images[0]).url()}
               alt={popularProduct.name || ''}
               fill
-              className={`object-cover transition-all duration-[1.5s] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-105 ${
-                isOutOfStock ? 'opacity-10 grayscale' : 'opacity-100'
-              }`}
+              className={`object-cover origin-center transition-transform duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 ${isOutOfStock ? 'opacity-50' : 'opacity-100'
+                }`}
             />
           )}
 
-          {/* Technical Framing (Transparent) */}
-          <div className="absolute inset-0 border border-black/[0.03] group-hover:border-orange-500/20 transition-colors duration-700" />
-          
-          {/* Subtle Scan Line */}
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-black/[0.05] group-hover:bg-orange-500/30 group-hover:top-full transition-all duration-[2s] linear" />
+          {/* Minimalist Hover Overlay - Very subtle darkening */}
+          <div className="absolute inset-0 bg-black/0 transition-colors duration-[1s] ease-out group-hover:bg-black/[0.03]" />
 
+          {/* Out of Stock - Elegant & Understated */}
           {isOutOfStock && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[10px] uppercase tracking-[0.8em] text-black/20 font-mono">
-                OUT_OF_SPEC
+            <div className="absolute inset-0 flex items-center justify-center z-20">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-black/60 bg-white/80 backdrop-blur-sm px-5 py-2">
+                Sold Out
               </span>
             </div>
           )}
         </div>
 
-        {/* Floating Details (No card background) */}
-        <div className="mt-10 px-2">
-          <div className="flex justify-between items-end">
-            <div className="space-y-2">
-               <div className="flex gap-1">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="size-[2px] bg-orange-500/40" />
-                  ))}
-               </div>
-               <h2 className="text-lg font-light tracking-tight text-black uppercase">
-                 {popularProduct.name}
-               </h2>
-               <p className="text-[9px] text-black/30 font-mono tracking-widest uppercase">
-                 Textile_Ref: {popularProduct._id.slice(0, 8)}
-               </p>
-            </div>
-            <div className="flex flex-col items-end">
-                <span className="text-xl font-serif italic text-black/80">
-                   ${popularProduct.price?.toLocaleString()}
-                </span>
-                <span className="text-[8px] text-orange-500/60 font-mono">0.00_LBS</span>
+        {/* Typography Section - Small, Clean, Highly Legible */}
+        <div className="mt-4 flex justify-between items-start px-1">
+
+          {/* Title with an elegant vertical sliding hover reveal */}
+          <div className="flex flex-col overflow-hidden h-5">
+            <div className="relative transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:-translate-y-full">
+              <h2 className="text-xs md:text-sm font-light tracking-wide text-black truncate pr-4">
+                {popularProduct.name}
+              </h2>
+              <span className="absolute top-full left-0 text-xs md:text-sm font-light tracking-wide text-black/40">
+                Explore
+              </span>
             </div>
           </div>
+
+          <div className="flex flex-col items-end">
+            <span className="text-xs md:text-sm font-light text-black/80 tracking-wider">
+              ${popularProduct.price?.toLocaleString()}
+            </span>
+          </div>
+
         </div>
       </Link>
     </div>

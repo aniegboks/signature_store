@@ -7,56 +7,53 @@ type SizeProps = {
 };
 
 const Size = ({ product }: SizeProps) => {
-  const [selectedSize, setSelectedSize] = useState<number>(0);
+  const [selectedSize, setSelectedSize] = useState<number | null>(null);
 
   return (
-    <div className="space-y-4">
-      {/* HUD Header for Section */}
-      <div className="flex items-center gap-2 mb-2">
-         <span className="text-[8px] font-mono text-black/30 uppercase tracking-[0.3em]">Scale_Adjustment //</span>
-         <span className="text-[8px] font-mono text-[#f97316] uppercase">Active_Selection</span>
+    <div className="space-y-6">
+      {/* Editorial Label */}
+      <div className="flex items-center gap-3">
+        <span className="text-[10px] font-sans text-neutral-400 uppercase tracking-[0.2em]">
+          Dimensions
+        </span>
+        <div className="w-4 h-px bg-neutral-200" />
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-4">
         {product?.sizes?.map((size: string, i: number) => {
           const isActive = selectedSize === i;
-          
+
           return (
             <button
               key={i}
               onClick={() => setSelectedSize(i)}
-              className="relative group transition-all duration-300"
+              className="relative group transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
             >
-              {/* THE TAG: Peach on Black when active, Transparent when not */}
+              {/* Sizing Node */}
               <div className={`
-                px-4 py-2 text-[11px] font-mono tracking-widest transition-all duration-500
-                ${isActive 
-                  ? 'bg-black text-[#f97316] shadow-lg translate-y-[-2px]' 
-                  : 'bg-transparent text-black/40 hover:text-black hover:bg-black/5'}
+                min-w-[54px] h-[48px] flex items-center justify-center px-4
+                text-[11px] tracking-[0.2em] transition-all duration-700
+                border border-black/[0.06]
+                ${isActive
+                  ? 'bg-neutral-900 text-white border-neutral-900 font-serif italic text-sm'
+                  : 'bg-transparent text-neutral-400 hover:text-neutral-900 hover:border-neutral-900'}
               `}>
                 {size.toUpperCase()}
               </div>
 
-              {/* SELECTION BIT (The tiny orange dot) */}
-              {isActive && (
-                <div className="absolute -top-1 -right-1 size-1.5 bg-[#f97316] rounded-full animate-pulse" />
-              )}
-
-              {/* CORNER WHISPERS (Only on hover/active to keep it strokeless) */}
-              <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                <div className="absolute top-0 left-0 size-1 border-t border-l border-black/20" />
-                <div className="absolute bottom-0 right-0 size-1 border-b border-r border-black/20" />
-              </div>
+              {/* Minimal Selection Bar beneath the button */}
+              <div className={`absolute -bottom-2 left-0 h-[1px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isActive ? 'w-full bg-neutral-900' : 'w-0 bg-transparent'
+                }`} />
             </button>
           );
         })}
       </div>
 
-      {/* FOOTER METADATA */}
+      {/* Narrative Footer */}
       <div className="pt-2">
-        <p className="text-[8px] font-mono text-black/20 uppercase tracking-widest">
-          Unit_Metric: ISO_Standard_044
-        </p>
+        <button className="text-[10px] font-sans text-neutral-300 hover:text-neutral-900 transition-colors uppercase tracking-[0.2em] border-b border-transparent hover:border-neutral-900 pb-0.5">
+          Size Guide & Fit Details
+        </button>
       </div>
     </div>
   );

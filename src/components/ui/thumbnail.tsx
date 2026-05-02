@@ -18,80 +18,67 @@ const Thumbnail = ({ product }: ThumbnailProps) => {
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".thumb-node", {
-        y: 10,
+        y: 20,
         opacity: 0,
-        stagger: 0.05,
-        duration: 0.8,
-        ease: "expo.out"
+        stagger: 0.08,
+        duration: 1,
+        ease: "power3.out"
       });
     }, containerRef);
     return () => ctx.revert();
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full py-8 mt-4 border-t border-black/[0.03]">
-      {/* HEADER HUD */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
-            <div className="size-1 bg-[#f97316] animate-pulse rounded-full" />
-            <span className="text-[8px] font-mono text-black uppercase tracking-[0.4em]">Multi_Angle_Scan</span>
+    <div ref={containerRef} className="relative w-full py-6 mt-8 border-t border-black/[0.04]">
+
+      {/* ── GALLERY HEADER ── */}
+      <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] text-neutral-400 uppercase tracking-[0.2em] font-sans">
+            Perspectives
+          </span>
+          <div className="w-4 h-px bg-neutral-200" />
         </div>
-        <span className="text-[8px] font-mono text-black/20 uppercase tracking-widest">Buffer // {images.length} Nodes</span>
+        <span className="text-[10px] text-neutral-300 uppercase tracking-widest font-sans">
+          {String(images.length).padStart(2, '0')} Views
+        </span>
       </div>
 
-      <div className="flex gap-8 overflow-x-auto no-scrollbar pb-4">
+      <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4">
         {images.map((img, i) => (
           <button
             key={img._key || i}
             onClick={() => setMainImageIndex(i)}
-            className={`thumb-node relative w-24 shrink-0 transition-all duration-500 ${
-              i === mainImageIndex ? 'scale-110' : 'scale-100 opacity-30 hover:opacity-100'
-            }`}
+            className={`thumb-node relative w-20 shrink-0 group transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${i === mainImageIndex ? 'opacity-100' : 'opacity-40 hover:opacity-80'
+              }`}
           >
-            {/* NO STROKE IMAGE CONTAINER */}
-            <div className="relative aspect-square bg-transparent transition-colors">
-              
-              {/* Subtle Corner Markers (No full stroke) */}
-              <div className="absolute top-0 left-0 size-1 border-t border-l border-black/10" />
-              <div className="absolute bottom-0 right-0 size-1 border-b border-r border-black/10" />
-
+            {/* ── IMAGE CONTAINER ── */}
+            <div className={`relative aspect-square bg-neutral-100 transition-all duration-700 ${i === mainImageIndex ? 'p-1 bg-neutral-200' : 'p-0'
+              }`}>
               <Image
                 src={imageUrl(img).url()}
-                alt={`Angle_0${i}`}
+                alt={`Product view 0${i + 1}`}
                 fill
-                className="object-contain"
+                className="object-cover"
               />
-
-              {/* SCANNING LINE EFFECT */}
-              {i === mainImageIndex && (
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                   <div className="w-full h-[1px] bg-[#f97316]/40 absolute top-0 animate-[scan_2.5s_linear_infinite]" />
-                </div>
-              )}
             </div>
 
-            {/* PEACH ON BLACK INDEX TAG */}
-            <div className="absolute -top-1 -right-1 z-10">
-               <div className={`${i === mainImageIndex ? 'bg-[#f97316] text-black font-bold' : 'bg-black text-white/20'} px-1.5 py-0.5 text-[7px] font-mono leading-none transition-colors duration-500`}>
-                  0{i + 1}
-               </div>
-            </div>
+            {/* ── EDITORIAL INDEX ── */}
+            <div className="mt-4 flex flex-col items-center gap-2">
+              <span className={`text-[9px] font-sans tracking-widest transition-colors duration-500 ${i === mainImageIndex ? 'text-neutral-900' : 'text-neutral-300'
+                }`}>
+                0{i + 1}
+              </span>
 
-            {/* MINIMAL SELECTION INDICATOR */}
-            <div className="mt-3 flex justify-center">
-                <div className={`h-[3px] rounded-full transition-all duration-700 ${i === mainImageIndex ? 'w-4 bg-[#f97316]' : 'w-0 bg-transparent'}`} />
+              {/* Minimalist Selection Bar */}
+              <div className={`h-[1px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${i === mainImageIndex ? 'w-full bg-neutral-900' : 'w-0 bg-transparent'
+                }`} />
             </div>
           </button>
         ))}
       </div>
 
       <style jsx global>{`
-        @keyframes scan {
-          0% { top: 0%; opacity: 0; }
-          20% { opacity: 1; }
-          80% { opacity: 1; }
-          100% { top: 100%; opacity: 0; }
-        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
