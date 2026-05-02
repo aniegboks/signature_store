@@ -126,7 +126,7 @@ const CartPage = () => {
 
   // --- CURATED STATE ---
   return (
-    <div className="py-32 lg:py-48 min-h-screen bg-[#F4F3F0] text-[#111111] selection:bg-black selection:text-white">
+    <div className="py-32 lg:py-48 min-h-screen bg-neutral-50 text-[#111111] selection:bg-black selection:text-white">
       <Container>
         {/* EDITORIAL HEADER */}
         <motion.div
