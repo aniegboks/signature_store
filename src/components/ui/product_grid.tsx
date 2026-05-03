@@ -68,7 +68,7 @@ const ProductGrid = ({ products, slug }: { products: Product[], slug: string }) 
                 </div>
 
                 {/* --- PRODUCT GRID --- */}
-                <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-20">
+                <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-20">
                     {products?.map((product, index) => (
                         <div key={product._id} className="grid-item group">
                             <ProductThumbnail product={product} index={index} />
