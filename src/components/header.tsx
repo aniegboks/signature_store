@@ -60,7 +60,7 @@ const Header = () => {
           </motion.svg>
         </div>
         <div className="flex flex-col pt-1">
-          <span className="font-serif italic text-xl md:text-2xl tracking-tight leading-none group-hover:opacity-60 transition-opacity duration-500">
+          <span className="font-heading italic text-xl md:text-2xl tracking-tight leading-none group-hover:opacity-60 transition-opacity duration-500">
             Signature.
           </span>
         </div>
@@ -72,8 +72,8 @@ const Header = () => {
     <>
       <motion.header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${isScrolled
-            ? "bg-white/90 backdrop-blur-md border-b border-black/[0.04] py-4"
-            : "bg-transparent py-6"
+          ? "bg-white/90 backdrop-blur-md border-b border-black/[0.04] py-4"
+          : "bg-transparent py-6"
           }`}
         initial={{ y: -100 }}
         animate={{ y: visible ? 0 : -100 }}

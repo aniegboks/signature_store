@@ -36,7 +36,7 @@ const Footer = () => {
                   </h2>
                 </Link>
                 <p className="font-heading text-3xl md:text-4xl leading-[1.1] text-neutral-500 tracking-tight italic max-w-2xl">
-                  Curating the intersection of <span className="text-white">human form</span> and <span className="text-white">textural permanence.</span>
+                  Curating the intersection of human form and textural permanence.
                 </p>
               </div>
 
