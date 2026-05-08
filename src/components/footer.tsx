@@ -41,20 +41,8 @@ const Footer = () => {
               </div>
 
               {/* Physical Studio Anchor */}
-              <div className="flex flex-col items-start lg:items-end gap-2 pt-4 border-l lg:border-l-0 lg:border-r border-white/10 pl-6 lg:pl-0 lg:pr-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="size-1.5 bg-white rounded-full animate-pulse" />
-                  <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-neutral-300 font-bold">
-                    Studio Online
-                  </span>
-                </div>
-                <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">
-                  Lekki, Lagos — NG
-                </span>
-                <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-widest mt-1">
-                  10:58 AM WAT
-                </span>
-              </div>
+
+
             </div>
 
             {/* --- MAIN NAVIGATION: THE ARCHIVES --- */}
