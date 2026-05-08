@@ -140,7 +140,7 @@ const Footer = () => {
                 <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-[0.4em]">
                   Designed by Signature
                 </span>
-                <span className="text-[10px] font-serif italic text-neutral-400">
+                <span className="text-[10px] font-heading italic text-neutral-400">
                   Built for the forward-thinking collective.
                 </span>
               </div>
@@ -153,4 +153,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Footer;  
