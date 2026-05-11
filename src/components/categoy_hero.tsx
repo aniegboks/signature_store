@@ -24,14 +24,14 @@ const CategoryHero = ({ title, subtitle }: HeroProps) => {
 
             {/* LEFT: Large H1 Title (Reduced size) */}
             <div className="lg:col-span-7 xl:col-span-8">
-              <h1 className="text-5xl md:text-7xl lg:text-[7.5rem] font-serif tracking-tight leading-[0.85] capitalize">
+              <h1 className="text-5xl md:text-6xl lg:text-[6rem] font-heading tracking-tight leading-[0.85] capitalize">
                 {title}
               </h1>
             </div>
 
             {/* RIGHT: Paragraph & Meta (Aligned to baseline of H1) */}
-            <div className="lg:col-span-5 xl:col-span-4 flex flex-col space-y-8 lg:pb-3">
-              <p className="font-sans text-base md:text-lg text-white/60 font-light leading-relaxed max-w-md">
+            <div className="lg:col-span-5 xl:col-span-4 flex flex-col lg:pb-3">
+              <p className="font-body text-base md:text-sm text-white/60 font-light leading-relaxed max-w-md">
                 {subtitle || "A study in drape, weight, and silhouette. Engineered for longevity and effortless movement."}
               </p>
 
