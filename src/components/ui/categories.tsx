@@ -76,17 +76,16 @@ const Categories = ({ featuredCategories }: CategoriesProps) => {
                     </div>
 
                     {/* Right: Persistent Image */}
-                    <div className="relative w-[35%] md:w-[25%] aspect-[4/3] md:aspect-[16/9] overflow-hidden bg-neutral-100 z-10">
+                    <div className="relative w-[35%] md:w-[25%] aspect-square overflow-hidden bg-neutral-100 z-10">
                       {img && (
                         <Image
                           src={img}
                           alt={category.title || 'Category image'}
                           fill
-                          className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
+                          sizes="(max-width: 768px) 35vw, 25vw"
+                          className="object-cover object-top group-hover:scale-105 transition-all duration-[1.5s] ease-out"
                         />
                       )}
-                      {/* Subtle darkening overlay that fades out on hover */}
-                      <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-700" />
                     </div>
 
                   </div>
