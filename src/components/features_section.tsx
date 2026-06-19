@@ -130,10 +130,10 @@ const FeaturesSection = () => {
               {/* Replace with an actual close-up of hoodie fabric */}
               <div className="absolute inset-0 bg-neutral-200">
                 <Image
-                  src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1000&auto=format&fit=crop"
+                  src={'/assets/images/img-8.jpg'}
                   alt="Heavyweight cotton texture"
                   fill
-                  className="object-cover grayscale contrast-125 opacity-80 group-hover:scale-110 transition-transform duration-[2s] ease-out"
+                  className="object-cover contrast-125 opacity-80 group-hover:scale-110 transition-transform duration-[2s] ease-out"
                 />
                 <div className="absolute inset-0 bg-black/10 transition-opacity duration-700 group-hover:bg-transparent" />
               </div>
