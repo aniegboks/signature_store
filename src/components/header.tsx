@@ -37,14 +37,14 @@ const Header = () => {
   // Elegant easing for all animations
   const elegantEasing: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-  // Dynamic color variables based on scroll state
-  const textBase = isScrolled ? "text-neutral-900" : "text-[#FAFAFA]";
-  const textMuted = isScrolled ? "text-neutral-500" : "text-white/70";
-  const textHover = isScrolled ? "hover:text-neutral-900" : "hover:text-white";
+  // UPDATED: Dynamic color variables fixed for light background
+  const textBase = "text-neutral-900";
+  const textMuted = isScrolled ? "text-neutral-500" : "text-neutral-600";
+  const textHover = "hover:text-black transition-colors duration-300";
 
   // Reusable Brand Logo Component
-  // `forceDark` ensures it stays dark inside the white mobile menu overlay
   const BrandLogo = ({ forceDark = false }: { forceDark?: boolean }) => {
+    // textBase is now dark by default, so we can just use it directly
     const colorClass = forceDark ? "text-neutral-900" : textBase;
 
     return (
@@ -169,7 +169,7 @@ const Header = () => {
             </div>
 
             {/* Menu Links */}
-            <nav className="flex-1 flex flex-col justify-center px-6 md:px-12 space-y-6">
+            <nav className="flex-1 flex flex-col justify-center px-6 md:px-12 space-y-6 font-body">
               {nav.map(({ name, label }, i) => (
                 <motion.div
                   key={name}
@@ -183,7 +183,7 @@ const Header = () => {
                     className="group flex items-center gap-6"
                   >
                     <span className="text-xs text-neutral-300 font-light">0{i + 1}</span>
-                    <span className="text-5xl md:text-7xl font-serif text-neutral-900 tracking-tight group-hover:italic transition-all duration-500">
+                    <span className="text-5xl md:text-7xl font-heading text-neutral-900 tracking-tight group-hover:italic transition-all duration-500">
                       {name}
                     </span>
                   </Link>

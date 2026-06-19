@@ -128,7 +128,7 @@ const Cta = () => {
                             <div className="w-full flex justify-between items-end gap-12">
                                 <div className="flex flex-col gap-1 w-full max-w-sm pointer-events-auto">
                                     <span className="text-[7px] font-mono text-neutral-400 tracking-[0.4em] uppercase">Studio_Notes: Texture_Study</span>
-                                    <p className="text-xl font-serif text-black italic">A subtle interplay of form and function.</p>
+                                    <p className="text-xl font-heading text-black italic">A subtle interplay of form and function.</p>
                                     <p className="text-xs text-neutral-400">Our curated study on the art of comfort.</p>
                                 </div>
                                 <div ref={curatorRef} className="flex gap-0.5 pointer-events-auto">

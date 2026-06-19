@@ -131,7 +131,7 @@ const Faq = ({ allFaq }: FaqProps) => {
                                     src={imageUrl(allFaq[0].image).url()}
                                     alt="Garment details"
                                     fill
-                                    className="object-cover transition-transform duration-[6s] ease-out hover:scale-105 grayscale hover:grayscale-0"
+                                    className="object-cover"
                                     priority
                                 />
                             )}
@@ -139,12 +139,6 @@ const Faq = ({ allFaq }: FaqProps) => {
                             <div className="absolute inset-0 bg-black/5 pointer-events-none" />
 
                             {/* Minimal structural detail replacing the tape */}
-                            <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                                <div className="h-px w-6 bg-white/60" />
-                                <span className="font-sans text-[9px] uppercase tracking-widest text-white/80 mix-blend-difference">
-                                    Archive_Ref
-                                </span>
-                            </div>
                         </div>
                     </div>
 
