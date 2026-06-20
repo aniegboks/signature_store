@@ -90,10 +90,10 @@ const BannerSection = ({ banner }: { banner: Banner[] }) => {
           </div>
 
           <div className="gallery-element space-y-6 max-w-md text-center lg:text-left opacity-0 translate-x-4">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-tight leading-[1.1] font-light">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading tracking-tight leading-[1.1] font-light">
               {currentBanner?.name || "The Collection"}
             </h1>
-            <p className="text-xs text-[#1A1A1A]/60 leading-relaxed font-light px-4 lg:px-0">
+            <p className="text-xs text-[#1A1A1A]/60 leading-relaxed font-light px-4 lg:px-0 font-body">
               {currentBanner?.description || "An exploration of form, light, and narrative."}
             </p>
           </div>
